@@ -16,15 +16,15 @@ export const RiskPage: React.FC = () => {
   const { riskAssessment, dashboard, formatCurrency } = useFinancial();
 
   const overallScore = riskAssessment?.overallScore || 68;
-  const riskLevel = riskAssessment?.riskLevel || 'Elevated Risk';
+  const riskLevel = riskAssessment?.riskLevel || 'elevated';
   const pillars = riskAssessment?.pillars || {
-    runwayRisk: 75,
-    burnRateRisk: 80,
+    cashFlowRisk: 75,
+    spendingRisk: 80,
     budgetRisk: 65,
     anomalyRisk: 52,
   };
-  const primaryDrivers = riskAssessment?.primaryDrivers || [];
-  const stressTests = riskAssessment?.stressTests || [];
+  const primaryDrivers = riskAssessment?.topContributingFactors || [];
+  const stressTests = riskAssessment?.stressTestScenarios || [];
   const aiRiskSummary = riskAssessment?.aiRiskSummary || 'Evaluating enterprise capital exposure...';
 
   const healthScore = dashboard?.kpis?.healthScore?.score || 74;
@@ -32,17 +32,17 @@ export const RiskPage: React.FC = () => {
   const pillarCards = [
     {
       title: 'Cash Runway & Depletion Risk',
-      score: pillars.runwayRisk,
+      score: pillars.cashFlowRisk,
       desc: 'Based on 7.2-month reserve buffer vs 12-month policy corridor.',
-      color: pillars.runwayRisk > 70 ? 'text-rose-600' : 'text-amber-600',
-      bg: pillars.runwayRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
+      color: pillars.cashFlowRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.cashFlowRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
     {
       title: 'Spending Velocity Risk',
-      score: pillars.burnRateRisk,
+      score: pillars.spendingRisk,
       desc: '+13.1% MoM expansion in operating burn velocity.',
-      color: pillars.burnRateRisk > 70 ? 'text-rose-600' : 'text-amber-600',
-      bg: pillars.burnRateRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
+      color: pillars.spendingRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.spendingRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
     {
       title: 'Budget Adherence Risk',
@@ -134,7 +134,7 @@ export const RiskPage: React.FC = () => {
         ))}
       </div>
 
-      {/* 3. Primary Root Cause Drivers */}
+      {/* 3. Primary Contributing Factors */}
       <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3.5">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
           <AlertTriangle className="w-4 h-4 text-amber-600" />
@@ -148,7 +148,7 @@ export const RiskPage: React.FC = () => {
               className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900">{driver.category}</span>
+                <span className="text-xs font-bold text-slate-900">{driver.factor}</span>
                 <span
                   className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${
                     driver.severity === 'critical'
@@ -159,10 +159,10 @@ export const RiskPage: React.FC = () => {
                   {driver.severity}
                 </span>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed">{driver.description}</p>
+              <p className="text-xs text-slate-600 leading-relaxed">{driver.impact}</p>
               <div className="pt-1 text-[11px] text-slate-500">
                 <span className="font-semibold text-slate-700">Mitigation: </span>
-                {driver.suggestedAction}
+                {driver.recommendation}
               </div>
             </div>
           ))}
@@ -186,30 +186,16 @@ export const RiskPage: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold text-slate-900">{test.name}</h4>
-                <span
-                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                    test.resilienceRating === 'High Resilience'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-rose-50 text-rose-700 border border-rose-200'
-                  }`}
-                >
-                  {test.resilienceRating}
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                  {test.probability} Probability
                 </span>
               </div>
 
               <p className="text-xs text-slate-600 leading-relaxed">{test.description}</p>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-[11px]">
-                <div>
-                  <span className="text-slate-500 block">Simulated Runway</span>
-                  <span className="font-bold text-slate-900">{test.projectedRunwayMonths} mos</span>
-                </div>
-                <div>
-                  <span className="text-slate-500 block">Capital Impact</span>
-                  <span className="font-bold text-rose-600">
-                    -{formatCurrency(test.capitalImpact, true)}
-                  </span>
-                </div>
+              <div className="pt-2 border-t border-slate-100 text-[11px]">
+                <span className="text-slate-500 block">Estimated Runway Impact</span>
+                <span className="font-bold text-rose-600">{test.estimatedRunwayImpact}</span>
               </div>
             </div>
           ))}

@@ -14,7 +14,7 @@ import {
   FileSpreadsheet,
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
-import { FinancialTransaction, RiskLevel, TransactionStatus } from '../types';
+import { Transaction, RiskLevel, TransactionStatus } from '../types';
 
 export const TransactionsPage: React.FC = () => {
   const { transactions, setSelectedTransaction, formatCurrency } = useFinancial();
@@ -25,7 +25,7 @@ export const TransactionsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');
-  const [sortField, setSortField] = useState<keyof FinancialTransaction>('date');
+  const [sortField, setSortField] = useState<keyof Transaction>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -63,16 +63,15 @@ export const TransactionsPage: React.FC = () => {
         return matchesSearch && matchesRisk && matchesStatus && matchesCategory && matchesType;
       })
       .sort((a, b) => {
-        let valA = a[sortField];
-        let valB = b[sortField];
+        const valA = a[sortField];
+        const valB = b[sortField];
 
-        if (typeof valA === 'string') {
-          valA = (valA as string).toLowerCase();
-          valB = ((valB as string) || '').toLowerCase();
+        if (typeof valA === 'string' && typeof valB === 'string') {
+          return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
-
-        if (valA! < valB!) return sortOrder === 'asc' ? -1 : 1;
-        if (valA! > valB!) return sortOrder === 'asc' ? 1 : -1;
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return sortOrder === 'asc' ? valA - valB : valB - valA;
+        }
         return 0;
       });
   }, [
@@ -93,7 +92,7 @@ export const TransactionsPage: React.FC = () => {
     currentPage * itemsPerPage
   );
 
-  const handleSort = (field: keyof FinancialTransaction) => {
+  const handleSort = (field: keyof Transaction) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {

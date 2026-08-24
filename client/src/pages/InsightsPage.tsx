@@ -15,13 +15,13 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
-import { FinancialInsight, InsightPriority } from '../types';
+import { AIInsight, InsightPriority } from '../types';
 
 export const InsightsPage: React.FC = () => {
   const { insights, resolveInsight, dismissInsight, formatCurrency } = useFinancial();
   const [selectedFilter, setSelectedFilter] = useState<'all' | InsightPriority>('all');
 
-  const insightList: FinancialInsight[] = insights || [];
+  const insightList: AIInsight[] = insights || [];
   const filteredInsights = insightList.filter((insight) => {
     if (selectedFilter === 'all') return true;
     return insight.priority === selectedFilter;
@@ -162,7 +162,9 @@ export const InsightsPage: React.FC = () => {
                       </div>
 
                       <h4 className="text-sm font-bold text-slate-900 tracking-tight">{item.title}</h4>
-                      <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">{item.description}</p>
+                      <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
+                        {item.insight || item.supportingData || ''}
+                      </p>
                     </div>
                   </div>
 

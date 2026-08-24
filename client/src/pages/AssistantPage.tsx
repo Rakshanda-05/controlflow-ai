@@ -15,7 +15,7 @@ import {
 import { useFinancial } from '../context/FinancialContext';
 
 export const AssistantPage: React.FC = () => {
-  const { assistantMessages, askAssistant, isAssistantLoading, formatCurrency } = useFinancial();
+  const { assistantMessages, sendAssistantQuery, isAssistantThinking, formatCurrency } = useFinancial();
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -25,20 +25,20 @@ export const AssistantPage: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [assistantMessages, isAssistantLoading]);
+  }, [assistantMessages, isAssistantThinking]);
 
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!inputText.trim() || isAssistantLoading) return;
+    if (!inputText.trim() || isAssistantThinking) return;
 
     const query = inputText;
     setInputText('');
-    await askAssistant(query);
+    await sendAssistantQuery(query);
   };
 
   const handlePromptClick = async (prompt: string) => {
-    if (isAssistantLoading) return;
-    await askAssistant(prompt);
+    if (isAssistantThinking) return;
+    await sendAssistantQuery(prompt);
   };
 
   const quickPrompts = [
@@ -139,11 +139,7 @@ export const AssistantPage: React.FC = () => {
                         <span className="text-[10px] uppercase font-semibold text-slate-500 block">
                           {m.label}
                         </span>
-                        <span
-                          className={`text-sm font-bold font-mono ${
-                            m.isAlert ? 'text-rose-600' : 'text-slate-900'
-                          }`}
-                        >
+                        <span className="text-sm font-bold font-mono text-slate-900">
                           {m.value}
                         </span>
                       </div>
@@ -152,13 +148,13 @@ export const AssistantPage: React.FC = () => {
                 )}
 
                 {/* Recommended Follow-up Prompt Chips */}
-                {msg.followUps && msg.followUps.length > 0 && (
+                {msg.suggestedFollowUps && msg.suggestedFollowUps.length > 0 && (
                   <div className="pt-2 border-t border-slate-200 space-y-1.5">
                     <span className="text-[10px] uppercase font-semibold text-slate-500 block">
                       Suggested Follow-ups:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {msg.followUps.map((fu, idx) => (
+                      {msg.suggestedFollowUps.map((fu, idx) => (
                         <button
                           key={idx}
                           onClick={() => handlePromptClick(fu)}
@@ -182,7 +178,7 @@ export const AssistantPage: React.FC = () => {
         })}
 
         {/* Loading Indicator */}
-        {isAssistantLoading && (
+        {isAssistantThinking && (
           <div className="flex gap-3 items-center text-slate-500 text-xs">
             <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0">
               <Bot className="w-3.5 h-3.5" />
@@ -212,12 +208,12 @@ export const AssistantPage: React.FC = () => {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Ask about burn rate, runway, department spend, or cost savings..."
-          disabled={isAssistantLoading}
+          disabled={isAssistantThinking}
           className="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 shadow-xs"
         />
         <button
           type="submit"
-          disabled={!inputText.trim() || isAssistantLoading}
+          disabled={!inputText.trim() || isAssistantThinking}
           className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
         >
           <Send className="w-3.5 h-3.5" />

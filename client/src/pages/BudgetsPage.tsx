@@ -15,12 +15,12 @@ import { useFinancial } from '../context/FinancialContext';
 import { DepartmentBudget } from '../types';
 
 export const BudgetsPage: React.FC = () => {
-  const { budgets, updateBudget, formatCurrency } = useFinancial();
+  const { budgets, reallocateBudget, formatCurrency } = useFinancial();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editAllocated, setEditAllocated] = useState<number>(0);
 
   const totalAllocated = budgets.reduce((sum, b) => sum + b.allocated, 0);
-  const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
+  const totalSpent = budgets.reduce((sum, b) => sum + (b.actualSpend || 0), 0);
   const overallUsedPct = totalAllocated > 0 ? Math.round((totalSpent / totalAllocated) * 100) : 0;
   const monthElapsedPct = 74; // Standard billing cycle calendar progress
 
@@ -30,7 +30,7 @@ export const BudgetsPage: React.FC = () => {
   };
 
   const handleSaveEdit = async (id: string) => {
-    await updateBudget(id, editAllocated);
+    await reallocateBudget(id, editAllocated);
     setEditingId(null);
   };
 
@@ -176,7 +176,7 @@ export const BudgetsPage: React.FC = () => {
                     Spent to Date
                   </span>
                   <span className="font-mono font-bold text-slate-900">
-                    {formatCurrency(dept.spent)}
+                    {formatCurrency(dept.actualSpend || 0)}
                   </span>
                 </div>
 

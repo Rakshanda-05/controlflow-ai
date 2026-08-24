@@ -18,7 +18,7 @@ export const SettingsPage: React.FC = () => {
 
   const [companyName, setCompanyName] = useState(dashboard?.company?.name || 'Apex Technologies Pvt Ltd');
   const [arr, setArr] = useState(dashboard?.company?.arr || 14200000);
-  const [headcount, setHeadcount] = useState(dashboard?.company?.headcount || 28);
+  const [headcount, setHeadcount] = useState(dashboard?.company?.employeeCount || 28);
   const [zScoreThreshold, setZScoreThreshold] = useState(2.2);
   const [safetyReserveFloor, setSafetyReserveFloor] = useState(4000000); // ₹40L
   const [emailAlerts, setEmailAlerts] = useState(true);

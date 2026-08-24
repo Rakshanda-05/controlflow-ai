@@ -25,18 +25,18 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { useFinancial } from '../context/FinancialContext';
-import { ScenarioInputs } from '../types';
+import { ScenarioInput } from '../types';
 
 export const SimulatorPage: React.FC = () => {
   const { scenarioResult, runScenario, formatCurrency } = useFinancial();
 
   // Slider State (Rupee defaults)
-  const [scenarioInputs, setScenarioInputs] = useState<ScenarioInputs>({
+  const [scenarioInputs, setScenarioInputs] = useState<ScenarioInput>({
     revenueGrowthPct: 0,
     expenseGrowthPct: 0,
-    headcountDelta: 0,
-    avgSalary: 1200000, // ₹12L default
-    marketingBudgetDelta: 0,
+    newHiresCount: 0,
+    avgHireSalary: 1200000, // ₹12L default
+    marketingSpendDelta: 0,
   });
 
   // Debounced Scenario calculation
@@ -51,9 +51,9 @@ export const SimulatorPage: React.FC = () => {
     setScenarioInputs({
       revenueGrowthPct: 0,
       expenseGrowthPct: 0,
-      headcountDelta: 0,
-      avgSalary: 1200000,
-      marketingBudgetDelta: 0,
+      newHiresCount: 0,
+      avgHireSalary: 1200000,
+      marketingSpendDelta: 0,
     });
   };
 
@@ -63,36 +63,36 @@ export const SimulatorPage: React.FC = () => {
         setScenarioInputs({
           revenueGrowthPct: -25,
           expenseGrowthPct: 5,
-          headcountDelta: 0,
-          avgSalary: 1200000,
-          marketingBudgetDelta: -800000,
+          newHiresCount: 0,
+          avgHireSalary: 1200000,
+          marketingSpendDelta: -800000,
         });
         break;
       case 'expansion':
         setScenarioInputs({
           revenueGrowthPct: 40,
           expenseGrowthPct: 15,
-          headcountDelta: 4,
-          avgSalary: 1200000,
-          marketingBudgetDelta: 1600000,
+          newHiresCount: 4,
+          avgHireSalary: 1200000,
+          marketingSpendDelta: 1600000,
         });
         break;
       case 'bootstrap':
         setScenarioInputs({
           revenueGrowthPct: 0,
           expenseGrowthPct: -20,
-          headcountDelta: -2,
-          avgSalary: 1200000,
-          marketingBudgetDelta: -1200000,
+          newHiresCount: -2,
+          avgHireSalary: 1200000,
+          marketingSpendDelta: -1200000,
         });
         break;
       case 'delayed_fundraise':
         setScenarioInputs({
           revenueGrowthPct: 10,
           expenseGrowthPct: -15,
-          headcountDelta: -1,
-          avgSalary: 1200000,
-          marketingBudgetDelta: -800000,
+          newHiresCount: -1,
+          avgHireSalary: 1200000,
+          marketingSpendDelta: -800000,
         });
         break;
     }
@@ -242,8 +242,8 @@ export const SimulatorPage: React.FC = () => {
             <div className="flex items-center justify-between text-xs">
               <span className="font-medium text-slate-700">Headcount Additions</span>
               <span className="font-mono font-bold text-slate-900">
-                {scenarioInputs.headcountDelta > 0 ? '+' : ''}
-                {scenarioInputs.headcountDelta} Roles
+                {scenarioInputs.newHiresCount > 0 ? '+' : ''}
+                {scenarioInputs.newHiresCount} Roles
               </span>
             </div>
             <input
@@ -251,9 +251,9 @@ export const SimulatorPage: React.FC = () => {
               min="-5"
               max="15"
               step="1"
-              value={scenarioInputs.headcountDelta}
+              value={scenarioInputs.newHiresCount}
               onChange={(e) =>
-                setScenarioInputs({ ...scenarioInputs, headcountDelta: Number(e.target.value) })
+                setScenarioInputs({ ...scenarioInputs, newHiresCount: Number(e.target.value) })
               }
               className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
             />
@@ -270,15 +270,15 @@ export const SimulatorPage: React.FC = () => {
               <span className="font-medium text-slate-700">Marketing Budget Shift</span>
               <span
                 className={`font-mono font-bold ${
-                  scenarioInputs.marketingBudgetDelta > 0
+                  scenarioInputs.marketingSpendDelta > 0
                     ? 'text-rose-600'
-                    : scenarioInputs.marketingBudgetDelta < 0
+                    : scenarioInputs.marketingSpendDelta < 0
                     ? 'text-emerald-600'
                     : 'text-slate-600'
                 }`}
               >
-                {scenarioInputs.marketingBudgetDelta > 0 ? '+' : ''}
-                {formatCurrency(scenarioInputs.marketingBudgetDelta, true)}/mo
+                {scenarioInputs.marketingSpendDelta > 0 ? '+' : ''}
+                {formatCurrency(scenarioInputs.marketingSpendDelta, true)}/mo
               </span>
             </div>
             <input
@@ -286,11 +286,11 @@ export const SimulatorPage: React.FC = () => {
               min="-400000"
               max="500000"
               step="50000"
-              value={scenarioInputs.marketingBudgetDelta}
+              value={scenarioInputs.marketingSpendDelta}
               onChange={(e) =>
                 setScenarioInputs({
                   ...scenarioInputs,
-                  marketingBudgetDelta: Number(e.target.value),
+                  marketingSpendDelta: Number(e.target.value),
                 })
               }
               className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
@@ -305,7 +305,7 @@ export const SimulatorPage: React.FC = () => {
 
         {/* Right Column: Impact Analysis & Visual Projections (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* AI Narrative Analysis Card */}
+          {/* Narrative Analysis Card */}
           <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -349,9 +349,9 @@ export const SimulatorPage: React.FC = () => {
             </div>
 
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[10px] text-slate-500 uppercase font-medium block">Monthly Burn</span>
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">Monthly Expenses</span>
               <p className="text-lg font-bold font-mono text-slate-900 mt-1">
-                {formatCurrency(simulated.monthlyBurnRate, true)}
+                {formatCurrency(simulated.monthlyExpenses, true)}
               </p>
               <span
                 className={`text-[10px] font-medium mt-0.5 block ${
@@ -364,24 +364,24 @@ export const SimulatorPage: React.FC = () => {
             </div>
 
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-              <span className="text-[10px] text-slate-500 uppercase font-medium block">6-Month Capital</span>
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">6-Month Delta</span>
               <p className="text-lg font-bold font-mono text-slate-900 mt-1">
-                {formatCurrency(simulated.endingCashBalance6M, true)}
+                {formatCurrency(simulated.monthlyRevenue, true)}
               </p>
               <span
                 className={`text-[10px] font-medium mt-0.5 block ${
-                  impact.cashBalance6MDelta >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                  impact.projectedCashAfter6MonthsDelta >= 0 ? 'text-emerald-600' : 'text-rose-600'
                 }`}
               >
-                {impact.cashBalance6MDelta >= 0 ? '+' : ''}
-                {formatCurrency(impact.cashBalance6MDelta, true)}
+                {impact.projectedCashAfter6MonthsDelta >= 0 ? '+' : ''}
+                {formatCurrency(impact.projectedCashAfter6MonthsDelta, true)}
               </span>
             </div>
 
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
               <span className="text-[10px] text-slate-500 uppercase font-medium block">Projected Risk</span>
               <p className="text-lg font-bold font-mono text-slate-900 mt-1">
-                {simulated.projectedRiskScore} <span className="text-xs text-slate-500 font-normal">/ 100</span>
+                {simulated.riskScore} <span className="text-xs text-slate-500 font-normal">/ 100</span>
               </p>
               <span
                 className={`text-[10px] font-medium mt-0.5 block ${
@@ -413,7 +413,7 @@ export const SimulatorPage: React.FC = () => {
             <div className="h-48 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={timelineProjection} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                  <XAxis dataKey="label" stroke="#94a3b8" fontSize={11} tickLine={false} />
                   <YAxis
                     stroke="#94a3b8"
                     fontSize={11}
@@ -431,7 +431,7 @@ export const SimulatorPage: React.FC = () => {
                   />
                   <Line
                     type="monotone"
-                    dataKey="baselineCash"
+                    dataKey="baselineBalance"
                     name="Baseline Balance"
                     stroke="#94a3b8"
                     strokeWidth={2}
@@ -439,7 +439,7 @@ export const SimulatorPage: React.FC = () => {
                   />
                   <Line
                     type="monotone"
-                    dataKey="simulatedCash"
+                    dataKey="simulatedBalance"
                     name="Simulated Balance"
                     stroke="#2563eb"
                     strokeWidth={2.5}
