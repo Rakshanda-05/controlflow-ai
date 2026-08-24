@@ -9,7 +9,7 @@
     "dev:server": "npm run dev --prefix server",
     "build:client": "npm run build --prefix client",
     "build:server": "npm run build --prefix server",
-    "build": "cd client && npm install && npm run build",
+    "build": "if [ -d \"client\" ]; then cd client && npm install && npm run build; else npm run build; fi",
     "start": "node server/dist/index.js",
     "zip": "node scripts/generate_zip.js",
     "install:all": "npm install && npm install --prefix server && npm install --prefix client"
