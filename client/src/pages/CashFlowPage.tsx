@@ -1,25 +1,15 @@
 import React from 'react';
 import {
-  Sparkles,
   TrendingUp,
-  Clock,
-  ShieldAlert,
-  ArrowRight,
-  AlertTriangle,
-  Calendar,
-  Layers,
-  ChevronRight,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
   ComposedChart,
   Line,
   Bar,
-  Area,
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ReferenceLine,
 } from 'recharts';
 import { useFinancial } from '../context/FinancialContext';
@@ -34,9 +24,9 @@ export const CashFlowPage: React.FC = () => {
   const safetyThreshold = forecast?.safetyThreshold || 4000000;
 
   return (
-    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-5 w-full max-w-7xl mx-auto overflow-hidden">
       {/* 1. Cash Flow Summary Banner */}
-      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-3.5 sm:p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
         <div className="space-y-1.5 max-w-3xl">
           <div className="flex items-center gap-2">
             <span className="p-1 rounded bg-indigo-500/10 text-indigo-400">
@@ -71,7 +61,7 @@ export const CashFlowPage: React.FC = () => {
       </div>
 
       {/* 2. Top Forecast Metrics Grid (Responsive) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
         {/* Current Runway */}
         <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
           <span className="text-[11px] text-slate-400 font-medium block mb-1">Current Runway</span>
@@ -110,42 +100,36 @@ export const CashFlowPage: React.FC = () => {
           <p className="text-[10px] text-amber-400/80 mt-1">At current burn</p>
         </div>
       </div>
-        </div>
-      </div>
 
-      {/* 3. Predictive Cash Flow Chart (Historical vs Predicted with Confidence Corridor) */}
-      <div className="p-5 rounded-2xl glass-panel space-y-4">
+      {/* 3. Predictive Cash Flow Chart */}
+      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-sm font-bold text-white tracking-tight">
               Cash Balance & Burn Trajectory Projection
             </h3>
             <p className="text-xs text-slate-400">
-              Historical actuals (solid) vs {forecastHorizon}-Month AI econometric forecast (dashed with confidence corridor)
+              Historical actuals vs {forecastHorizon}-Month forecast with safety boundary
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded bg-emerald-500 inline-block" />
+              <span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block" />
               <span className="text-slate-300">Revenue</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded bg-rose-500 inline-block" />
+              <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block" />
               <span className="text-slate-300">Expenses</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-1.5 rounded bg-brand-400 inline-block" />
+              <span className="w-2.5 h-2.5 rounded bg-indigo-400 inline-block" />
               <span className="text-slate-300">Cash Balance</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded border border-dashed border-amber-400 bg-amber-500/20 inline-block" />
-              <span className="text-amber-300">Confidence Band</span>
             </div>
           </div>
         </div>
 
-        <div className="h-80 w-full">
+        <div className="h-72 md:h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={combinedSeries} margin={{ top: 15, right: 15, left: -10, bottom: 0 }}>
               <XAxis dataKey="label" stroke="#64748b" fontSize={11} tickLine={false} />
@@ -169,14 +153,14 @@ export const CashFlowPage: React.FC = () => {
               />
 
               {/* Historical Revenue */}
-              <Bar dataKey="actualRevenue" name="Actual Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="actualRevenue" name="Actual Revenue" fill="#10b981" radius={[3, 3, 0, 0]} />
               {/* Historical Expenses */}
-              <Bar dataKey="actualExpenses" name="Actual Expenses" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="actualExpenses" name="Actual Expenses" fill="#f43f5e" radius={[3, 3, 0, 0]} />
 
-              {/* Forecasted Revenue (Striped/Lighter) */}
-              <Bar dataKey="predictedRevenue" name="Forecast Revenue" fill="#34d399" opacity={0.65} radius={[4, 4, 0, 0]} />
-              {/* Forecasted Expenses (Striped/Lighter) */}
-              <Bar dataKey="predictedExpenses" name="Forecast Expenses" fill="#fb7185" opacity={0.65} radius={[4, 4, 0, 0]} />
+              {/* Forecasted Revenue */}
+              <Bar dataKey="predictedRevenue" name="Forecast Revenue" fill="#34d399" opacity={0.65} radius={[3, 3, 0, 0]} />
+              {/* Forecasted Expenses */}
+              <Bar dataKey="predictedExpenses" name="Forecast Expenses" fill="#fb7185" opacity={0.65} radius={[3, 3, 0, 0]} />
 
               {/* Cash Balance Line */}
               <Line
@@ -184,17 +168,17 @@ export const CashFlowPage: React.FC = () => {
                 dataKey="actualCashBalance"
                 name="Actual Cash Balance"
                 stroke="#6366f1"
-                strokeWidth={3}
-                dot={{ r: 4, fill: '#6366f1' }}
+                strokeWidth={2.5}
+                dot={{ r: 3, fill: '#6366f1' }}
               />
               <Line
                 type="monotone"
                 dataKey="projectedCashBalance"
                 name="Projected Cash Balance"
                 stroke="#818cf8"
-                strokeWidth={3}
-                strokeDasharray="5 5"
-                dot={{ r: 4, fill: '#818cf8' }}
+                strokeWidth={2.5}
+                strokeDasharray="4 4"
+                dot={{ r: 3, fill: '#818cf8' }}
               />
             </ComposedChart>
           </ResponsiveContainer>
@@ -202,8 +186,8 @@ export const CashFlowPage: React.FC = () => {
       </div>
 
       {/* 4. Detailed Monthly Predictive Breakdown Table */}
-      <div className="rounded-2xl glass-panel overflow-hidden border border-[#1f293d] space-y-2">
-        <div className="p-4 border-b border-[#1f293d] flex items-center justify-between">
+      <div className="rounded-xl bg-[#111726] overflow-hidden border border-[#1e293b] space-y-2">
+        <div className="p-4 border-b border-[#1e293b] flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-white">Monthly Cash Flow Trajectory Ledger</h3>
             <p className="text-xs text-slate-400">Full period metrics with historical vs forecast demarcation</p>
@@ -212,7 +196,7 @@ export const CashFlowPage: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#0f172a] text-slate-400 uppercase font-semibold text-[11px] border-b border-[#1f293d]">
+            <thead className="bg-[#0e1422] text-slate-400 uppercase font-semibold text-[11px] border-b border-[#1e293b]">
               <tr>
                 <th className="py-3 px-4">Period</th>
                 <th className="py-3 px-4">Data Type</th>
@@ -240,11 +224,11 @@ export const CashFlowPage: React.FC = () => {
                     <td className="py-3 px-4 font-mono font-bold text-white whitespace-nowrap">
                       {row.label}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 whitespace-nowrap">
                       <span
-                        className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
+                        className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
                           row.isForecast
-                            ? 'bg-brand-500/20 text-brand-300 border border-brand-500/30'
+                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                             : 'bg-slate-800 text-slate-400 border border-slate-700'
                         }`}
                       >
