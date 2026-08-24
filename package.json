@@ -1,0 +1,31 @@
+{
+  "name": "controlflow-ai",
+  "version": "1.0.0",
+  "description": "ControlFlow AI — Intelligent Autonomous Finance Controller for Modern Businesses",
+  "main": "server/dist/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build": "npm run build:server && npm run build:client",
+    "start": "node server/dist/index.js",
+    "zip": "node scripts/generate_zip.js",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client"
+  },
+  "keywords": [
+    "fintech",
+    "ai-finance",
+    "controller",
+    "anomaly-detection",
+    "cashflow-forecasting",
+    "financial-intelligence"
+  ],
+  "author": "ControlFlow AI Team",
+  "license": "MIT",
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "concurrently": "^9.1.2"
+  }
+}
