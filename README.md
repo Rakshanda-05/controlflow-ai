@@ -2,13 +2,25 @@
 
 > **Autonomous AI-Powered Financial Control, Multi-Factor Anomaly Detection, Cash Runway Forecasting, and Scenario Stress Testing for High-Growth Enterprises.**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://controlflow-ai.vercel.app/)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Rakshanda-05/controlflow-ai)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+---
+
+## 🌐 Live Deployment & Links
+
+- 🔗 **Live Web Application**: [https://controlflow-ai.vercel.app/](https://controlflow-ai.vercel.app/)
+- 🐙 **GitHub Repository**: [https://github.com/Rakshanda-05/controlflow-ai](https://github.com/Rakshanda-05/controlflow-ai)
+- 📦 **Downloadable Project ZIP**: `controlflow-ai.zip`
+
 ---
 
 ## 📌 Problem Statement
 
 Fast-growing startups and scaling enterprises frequently face critical financial blindspots:
-1. **Unmonitored Burn Acceleration**: Sudden cost surges in cloud infrastructure (e.g. AWS autoscaling/unindexed databases) and frontloaded paid marketing can silently deplete cash reserves months ahead of expectations.
-2. **Delayed Anomaly Identification**: High-risk wires, unexpected annual SaaS auto-renewals, duplicate flights, and out-of-policy expenses are often caught weeks after settlement during month-end reconciliation.
+1. **Unmonitored Burn Acceleration**: Sudden cost surges in cloud infrastructure (e.g. AWS compute/RDS unindexed queries) and frontloaded paid marketing can silently deplete cash reserves months ahead of expectations.
+2. **Delayed Anomaly Identification**: High-risk wires, unexpected annual SaaS auto-renewals, duplicate flight charges, and out-of-policy expenses are often caught weeks after settlement during month-end reconciliation.
 3. **Passive Financial Dashboards**: Traditional accounting software displays historical charts but provides zero predictive insights or contextual recommendations in plain business language.
 4. **Complex Scenario Modeling**: Financial modeling for hiring, market downturns, or marketing budget adjustments typically requires brittle, manual spreadsheets that are disconnected from real-time ledger data.
 
@@ -16,7 +28,7 @@ Fast-growing startups and scaling enterprises frequently face critical financial
 
 ## 💡 Solution: ControlFlow AI
 
-**ControlFlow AI** acts as an autonomous AI Finance Controller. Rather than presenting static historical charts, it continuously monitors ledger inflows and outflows to proactively detect anomalies, forecast cash depletion milestones, enforce departmental budget discipline, and provide real-time interactive "What-If" scenario simulations.
+**ControlFlow AI** acts as an autonomous AI Finance Controller. Rather than presenting static historical charts, it continuously monitors ledger inflows and outflows to proactively detect anomalies, forecast cash depletion milestones, enforce departmental budget discipline, and provide real-time interactive "What-If" scenario simulations in **Indian Rupees (₹ / INR)**.
 
 ---
 
@@ -24,19 +36,19 @@ Fast-growing startups and scaling enterprises frequently face critical financial
 
 ### 1. Executive Financial Dashboard
 - **Dynamic AI Executive Summary**: Real-time narrative synthesis diagnosing financial health, burn trajectory, and core expense drivers.
-- **Key Financial Indicators**: Period-over-period delta tracking for Total Revenue, Operating Expenses, Net Cash Flow, Cash Reserves, Monthly Burn Rate, and Cash Runway.
+- **Key Financial Indicators**: Period-over-period delta tracking for Total Revenue, Operating Expenses, Net Cash Flow, Cash Reserves, Monthly Burn Rate, and Cash Runway formatted in **₹ Lakhs** and **₹ Crores**.
 - **Composite Financial Health Score**: 0–100 index weighted across runway adequacy, spending velocity, budget adherence, and anomaly density.
 - **Interactive Visualizations**: High-precision Recharts for Revenue vs. Expenses, Cash Trajectory curves, Net Cash Flow bars, and Expense Category breakdowns.
 
 ### 2. Transaction Intelligence & Anomaly Detection
 - **Multi-Dimensional Anomaly Engine**: Combines **Isolation Forest (Scikit-Learn)**, **Z-Score statistical distance**, and **Interquartile Range (IQR)** to identify unusual spending spikes.
 - **Risk Categorization**: Transactions classified into *Critical*, *High*, *Medium*, and *Low* risk tiers.
-- **Anomaly Diagnostic Inspector**: Click-to-inspect modal displaying exact statistical deviation, baseline mean, expected corridor ($min - $max) vs. actual spend, and 1-click remediation actions.
+- **Anomaly Diagnostic Inspector**: Click-to-inspect modal displaying exact statistical deviation, baseline mean, expected corridor (₹min - ₹max) vs. actual spend, and 1-click remediation actions.
 - **Ledger Controls**: Advanced filtering by Category, Department, Status, Risk Level, and multi-column sorting.
 
 ### 3. Predictive Cash Flow Forecasting
 - **Multi-Horizon Econometric Projections**: Predicts revenue, expenses, and cash balance trajectories over 3, 6, or 12-month horizons using Holt-Winters exponential smoothing and linear trend regressions.
-- **Safety Reserve Floor**: Visual benchmark line ($400k default) calculating the exact projected date of reserve breach.
+- **Safety Reserve Floor**: Visual benchmark line (₹40.0L default) calculating the exact projected date of reserve breach.
 - **Confidence Intervals**: Displays upper and lower bounds to capture market and spending variance.
 
 ### 4. Department Budget Intelligence
@@ -46,7 +58,7 @@ Fast-growing startups and scaling enterprises frequently face critical financial
 
 ### 5. Prioritized AI Recommendations Feed
 - **Ranked Action Feed**: Critical, High, Medium, and Low priority optimization opportunities.
-- **Quantified Financial Impact**: Displays estimated monthly and annualized savings (e.g. +$14,800/mo AWS optimization, +$1,858/mo dormant SaaS deprovisioning).
+- **Quantified Financial Impact**: Displays estimated monthly and annualized savings (e.g. +₹1,48,000/mo AWS optimization, +₹18,580/mo dormant SaaS deprovisioning).
 - **Interactive Action System**: One-click "Execute Recommendation", "Mark Resolved", or "Dismiss".
 
 ### 6. 4-Pillar Risk Monitor & Stress Testing
@@ -67,7 +79,7 @@ Fast-growing startups and scaling enterprises frequently face critical financial
 - **Structured Financial Responses**: Returns metric cards, data breakdowns, and recommended follow-up queries.
 
 ### 8. What-If Scenario Simulator
-- **Interactive Sliders**: Real-time adjustment of Revenue Growth (-50% to +100%), Expense Inflation (-30% to +50%), Marketing Spend Delta (-$40k to +$50k), and New Headcount additions.
+- **Interactive Sliders**: Real-time adjustment of Revenue Growth (-50% to +100%), Expense Inflation (-30% to +50%), Marketing Spend Delta (-₹4.0L to +₹5.0L), and New Headcount additions.
 - **Side-by-Side Impact Matrix**: Instant live recalculation of Simulated Runway, Monthly Burn Delta, 6-Month Reserve Delta, and Projected Risk Score.
 - **One-Click Stress Presets**: "Bear Market / Recession", "Hypergrowth Expansion", "Conservative Bootstrap", and "Runway Extension".
 
@@ -121,10 +133,10 @@ controlflow-ai/
 │   ├── src/
 │   │   ├── components/         # Layout, Header, Sidebar, Toasts, Modals
 │   │   ├── pages/              # 8 Core Views (Dashboard, Ledger, Cash Flow, Budgets, etc.)
-│   │   ├── context/            # FinancialContext.tsx (Global React State)
+│   │   ├── context/            # FinancialContext.tsx (Global React State & INR Formatting)
 │   │   ├── services/           # api.ts (REST client with resilient fallback)
 │   │   ├── types/              # TypeScript interfaces & definitions
-│   │   ├── App.tsx             # Root Application Router & Modal Manager
+│   │   ├── App.tsx             # Root Application Router & ErrorBoundary
 │   │   └── main.tsx            # React DOM Entrypoint
 │   ├── index.html
 │   ├── package.json
@@ -132,7 +144,7 @@ controlflow-ai/
 │   └── vite.config.ts
 ├── server/                     # Node.js + Express + TypeScript Backend
 │   ├── src/
-│   │   ├── data/               # Master Financial Ledger & Benchmark Datasets
+│   │   ├── data/               # Master Financial Ledger (INR) & Benchmarks
 │   │   ├── routes/             # REST Routers (dashboard, transactions, forecast, budgets, risks, etc.)
 │   │   ├── services/           # AnomalyService, ForecastService, RiskService, SummaryService, AssistantService
 │   │   ├── types/              # Server Type Definitions
@@ -177,7 +189,7 @@ chmod +x scripts/run.sh
 
 ---
 
-### Method 2: Manual Installation & Concurrent Launch
+### Method 2: Manual Installation & Launch
 
 1. **Clone or Extract the Project Archive:**
    ```bash
@@ -186,9 +198,7 @@ chmod +x scripts/run.sh
 
 2. **Install Root and Subproject Dependencies:**
    ```bash
-   npm install
-   npm install --prefix server
-   npm install --prefix client
+   npm run install:all
    ```
 
 3. **Start Frontend and Backend Concurrently:**
@@ -240,7 +250,7 @@ chmod +x scripts/run.sh
 - Computes trend momentum using multi-variable regression with seasonal smoothing:
   $$R_{t} = \alpha_r + \beta_r t, \quad E_{t} = \alpha_e + \beta_e t$$
   $$\text{Balance}_t = \text{Balance}_{t-1} + R_t - E_t$$
-- Calculates exact milestone dates when cash balance dips below the safety boundary ($\$400\text{k}$).
+- Calculates exact milestone dates when cash balance dips below the safety boundary ($\text{₹}40\text{L}$).
 
 ---
 
@@ -253,8 +263,6 @@ npm run zip
 ```
 *Output: `controlflow-ai.zip` in the root project directory.*
 
-Alternatively, click the **"Download Project ZIP"** button located in the top navigation header or Settings tab within the running web application.
-
 ---
 
 ## 🔮 Future Enhancements
@@ -262,8 +270,3 @@ Alternatively, click the **"Download Project ZIP"** button located in the top na
 - Automated ERP synchronization (QuickBooks Online, NetSuite, Xero).
 - OCR receipt and invoice ingestion with automatic tax line-item parsing.
 - Slack & Microsoft Teams real-time webhook alert dispatching.
-
----
-
-## 📄 License
-This project is licensed under the MIT License.
