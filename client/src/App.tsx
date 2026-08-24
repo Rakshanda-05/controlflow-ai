@@ -2,6 +2,7 @@ import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
 import { FinancialProvider, useFinancial } from './context/FinancialContext';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
+import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { ToastContainer } from './components/layout/ToastContainer';
 import { AnomalyDetailModal } from './components/modals/AnomalyDetailModal';
 import { NewTransactionModal } from './components/modals/NewTransactionModal';
@@ -99,21 +100,26 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0b0f19] text-slate-100 font-sans antialiased">
-      {/* Sidebar Navigation (with Mobile Drawer support) */}
+    <div className="min-h-screen bg-[#0b0f19] text-slate-100 font-sans antialiased flex flex-col lg:flex-row overflow-x-hidden">
+      {/* Sidebar Navigation (Mobile slide-in drawer on phone, permanent on desktop) */}
       <Sidebar
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      {/* Main Content Area (Full width on mobile) */}
+      <div className="flex-1 flex flex-col min-w-0 w-full pb-16 lg:pb-0">
         <Header
           onOpenNewTxModal={() => setIsNewTxModalOpen(true)}
           onToggleMobileSidebar={() => setIsMobileSidebarOpen((prev) => !prev)}
         />
-        <main className="flex-1 pb-10">{renderCurrentPage()}</main>
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">
+          {renderCurrentPage()}
+        </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <MobileBottomNav onOpenMenu={() => setIsMobileSidebarOpen(true)} />
 
       {/* Global Modals */}
       <AnomalyDetailModal

@@ -16,8 +16,8 @@ import {
 import { useFinancial, NavTab } from '../../context/FinancialContext';
 
 interface SidebarProps {
-  isOpen?: boolean;
-  onClose?: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
@@ -88,22 +88,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const handleTabClick = (tab: NavTab) => {
     setCurrentTab(tab);
-    if (onClose) onClose();
+    onClose();
   };
 
   return (
     <>
       {/* Mobile Backdrop Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm transition-opacity"
-          onClick={onClose}
-        />
-      )}
+      <div
+        className={`fixed inset-0 bg-black/70 z-50 lg:hidden backdrop-blur-sm transition-opacity duration-200 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={onClose}
+      />
 
-      {/* Sidebar Container */}
+      {/* Sidebar Drawer Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#0e1422] border-r border-[#1e293b] flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 max-w-[85vw] bg-[#0e1422] border-r border-[#1e293b] flex flex-col transition-transform duration-200 ease-in-out shadow-2xl lg:shadow-none lg:static lg:w-64 lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -122,7 +122,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {/* Close button on mobile */}
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#1a2336] lg:hidden"
+            aria-label="Close menu"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#1a2336] lg:hidden"
           >
             <X className="w-5 h-5" />
           </button>
@@ -158,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors ${
                   isActive
                     ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                     : 'text-slate-300 hover:text-white hover:bg-[#151d2e]'

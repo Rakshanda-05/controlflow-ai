@@ -49,9 +49,9 @@ export const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-5 w-full max-w-7xl mx-auto overflow-hidden">
       {/* 1. Executive Summary Briefing */}
-      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-3.5 sm:p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
         <div className="space-y-1.5 max-w-3xl">
           <div className="flex items-center gap-2">
             <span className="p-1 rounded bg-indigo-500/10 text-indigo-400">
@@ -69,7 +69,7 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setCurrentTab('insights')}
-            className="px-3.5 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center gap-1.5"
+            className="w-full sm:w-auto justify-center px-3.5 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center gap-1.5"
           >
             <span>View Recommendations</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -78,7 +78,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* 2. Key Performance Indicators Grid (Responsive: 2 on Mobile, 3 on Tablet, 6 on Desktop) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 md:gap-4">
         {/* Total Revenue */}
         <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
           <span className="text-[11px] font-medium text-slate-400 block mb-1">Total Revenue</span>
