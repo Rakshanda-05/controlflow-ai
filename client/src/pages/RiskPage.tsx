@@ -5,69 +5,74 @@ import {
   TrendingDown,
   Activity,
   Flame,
-  Zap,
+  ArrowRight,
+  ShieldCheck,
   CheckCircle,
   HelpCircle,
-  Sparkles,
-  ArrowRight,
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
 
 export const RiskPage: React.FC = () => {
-  const { riskAssessment } = useFinancial();
+  const { riskAssessment, dashboard, formatCurrency } = useFinancial();
+
   const overallScore = riskAssessment?.overallScore || 68;
-  const riskLevel = riskAssessment?.riskLevel || 'elevated';
-  const healthScore = riskAssessment?.healthScore || 64;
-  const healthStatus = riskAssessment?.healthStatus || 'Stable';
-  const pillars = riskAssessment?.pillars || { cashFlowRisk: 72, spendingRisk: 78, budgetRisk: 64, anomalyRisk: 58 };
-  const topContributingFactors = riskAssessment?.topContributingFactors || [];
-  const stressTestScenarios = riskAssessment?.stressTestScenarios || [];
-  const aiRiskSummary = riskAssessment?.aiRiskSummary || 'Analyzing multi-pillar financial risk profile...';
+  const riskLevel = riskAssessment?.riskLevel || 'Elevated Risk';
+  const pillars = riskAssessment?.pillars || {
+    runwayRisk: 75,
+    burnRateRisk: 80,
+    budgetRisk: 65,
+    anomalyRisk: 52,
+  };
+  const primaryDrivers = riskAssessment?.primaryDrivers || [];
+  const stressTests = riskAssessment?.stressTests || [];
+  const aiRiskSummary = riskAssessment?.aiRiskSummary || 'Evaluating enterprise capital exposure...';
+
+  const healthScore = dashboard?.kpis?.healthScore?.score || 74;
 
   const pillarCards = [
     {
-      title: 'Cash Flow & Runway Risk',
-      score: pillars.cashFlowRisk,
-      description: 'Runway of 7.2 months is below the 12-month enterprise safety benchmark.',
-      icon: <Activity className="w-5 h-5 text-amber-400" />,
-      color: 'from-amber-500 to-rose-500',
+      title: 'Cash Runway & Depletion Risk',
+      score: pillars.runwayRisk,
+      desc: 'Based on 7.2-month reserve buffer vs 12-month policy corridor.',
+      color: pillars.runwayRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.runwayRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
     {
       title: 'Spending Velocity Risk',
-      score: pillars.spendingRisk,
-      description: 'Monthly operating expenses accelerated +18% MoM driven by AWS compute spikes.',
-      icon: <Flame className="w-5 h-5 text-rose-400" />,
-      color: 'from-rose-500 to-red-600',
+      score: pillars.burnRateRisk,
+      desc: '+13.1% MoM expansion in operating burn velocity.',
+      color: pillars.burnRateRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.burnRateRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
     {
-      title: 'Budget Discipline Risk',
+      title: 'Budget Adherence Risk',
       score: pillars.budgetRisk,
-      description: 'Engineering over budget (116.1%) and Marketing at 92.0% utilization.',
-      icon: <AlertTriangle className="w-5 h-5 text-yellow-400" />,
-      color: 'from-yellow-500 to-amber-500',
+      desc: 'Engineering is 116.1% utilized with 26% of cycle remaining.',
+      color: pillars.budgetRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.budgetRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
     {
-      title: 'Anomaly & Fraud Risk',
+      title: 'Outlier & Anomaly Exposure',
       score: pillars.anomalyRisk,
-      description: '7 active flagged transactions totaling ₹10.83L awaiting verification.',
-      icon: <ShieldAlert className="w-5 h-5 text-indigo-400" />,
-      color: 'from-indigo-500 to-brand-600',
+      desc: '7 flagged transactions under active controller review.',
+      color: pillars.anomalyRisk > 70 ? 'text-rose-600' : 'text-amber-600',
+      bg: pillars.anomalyRisk > 70 ? 'bg-rose-500' : 'bg-amber-500',
     },
   ];
 
   return (
-    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto w-full">
       {/* 1. Top Risk Score Overview */}
-      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row items-center justify-between gap-5">
+      <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-5">
         <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
           {/* Radial Score Gauge */}
-          <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
+          <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
                 r="42"
-                stroke="#1e293b"
+                stroke="#f1f5f9"
                 strokeWidth="8"
                 fill="transparent"
               />
@@ -75,7 +80,7 @@ export const RiskPage: React.FC = () => {
                 cx="50"
                 cy="50"
                 r="42"
-                stroke="#f43f5e"
+                stroke="#e11d48"
                 strokeWidth="8"
                 strokeDasharray="264"
                 strokeDashoffset={264 - (264 * overallScore) / 100}
@@ -84,8 +89,8 @@ export const RiskPage: React.FC = () => {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-bold text-white">{overallScore}</span>
-              <span className="text-[9px] uppercase font-semibold text-rose-400">
+              <span className="text-xl font-bold text-slate-900">{overallScore}</span>
+              <span className="text-[9px] uppercase font-semibold text-rose-600">
                 {riskLevel}
               </span>
             </div>
@@ -93,122 +98,119 @@ export const RiskPage: React.FC = () => {
 
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex items-center justify-center sm:justify-start gap-2">
-              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full text-rose-400 bg-rose-500/10 border border-rose-500/20">
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full text-rose-700 bg-rose-50 border border-rose-200">
                 Risk Score: {overallScore}/100
               </span>
-              <span className="text-[11px] text-slate-400">Health Index: {healthScore}/100</span>
+              <span className="text-[11px] text-slate-500">Health Index: {healthScore}/100</span>
             </div>
-            <h2 className="text-sm md:text-base font-bold text-white tracking-tight">
-              Risk & Capital Monitor
+            <h2 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
+              Financial Risk & Exposure Monitor
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed font-normal">
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
               "{aiRiskSummary}"
             </p>
           </div>
         </div>
       </div>
 
-      {/* 2. 4 Risk Pillars Breakdown */}
+      {/* 2. Four Risk Pillars Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {pillarCards.map((pillar, idx) => (
-          <div key={idx} className="p-5 rounded-2xl glass-card space-y-3">
+          <div key={idx} className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-xl bg-slate-800 border border-slate-700">
-                {pillar.icon}
-              </div>
-              <span className="text-xl font-mono font-bold text-white">{pillar.score}/100</span>
+              <span className="text-xs font-bold text-slate-800">{pillar.title}</span>
+              <span className={`text-sm font-bold font-mono ${pillar.color}`}>{pillar.score}/100</span>
             </div>
 
-            <div>
-              <h4 className="text-sm font-bold text-white">{pillar.title}</h4>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{pillar.description}</p>
+            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${pillar.bg}`}
+                style={{ width: `${pillar.score}%` }}
+              />
             </div>
 
-            {/* Progress Bar */}
-            <div className="space-y-1 pt-1">
-              <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full bg-gradient-to-r ${pillar.color}`}
-                  style={{ width: `${pillar.score}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-[10px] text-slate-500">
-                <span>Safe</span>
-                <span>Elevated Risk</span>
-              </div>
-            </div>
+            <p className="text-[11px] text-slate-500 leading-relaxed">{pillar.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* 3. Top Contributing Risk Drivers */}
-      <div className="p-5 rounded-2xl glass-panel space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-white tracking-tight">
-              Top Contributing Factors to Current Risk Score
-            </h3>
-            <p className="text-xs text-slate-400">
-              Ranked root-cause drivers with actionable mitigation protocols
-            </p>
-          </div>
+      {/* 3. Primary Root Cause Drivers */}
+      <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3.5">
+        <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <AlertTriangle className="w-4 h-4 text-amber-600" />
+          <h3 className="text-sm font-bold text-slate-900">Key Risk Drivers & Attribution</h3>
         </div>
 
-        <div className="space-y-3">
-          {topContributingFactors.map((factor, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {primaryDrivers.map((driver, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-xl bg-[#111827] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2"
             >
-              <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
-                      factor.severity === 'critical'
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                        : factor.severity === 'high'
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                        : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                    }`}
-                  >
-                    {factor.severity}
-                  </span>
-                  <h4 className="text-xs font-bold text-white">{factor.factor}</h4>
-                </div>
-                <p className="text-xs text-slate-400 font-mono">{factor.impact}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900">{driver.category}</span>
+                <span
+                  className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${
+                    driver.severity === 'critical'
+                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }`}
+                >
+                  {driver.severity}
+                </span>
               </div>
-
-              <div className="p-3 rounded-lg bg-[#162035] border border-[#22314e] text-xs text-brand-300 md:max-w-md">
-                <strong className="text-slate-400 uppercase text-[10px] block mb-0.5">Remediation:</strong>
-                {factor.recommendation}
+              <p className="text-xs text-slate-600 leading-relaxed">{driver.description}</p>
+              <div className="pt-1 text-[11px] text-slate-500">
+                <span className="font-semibold text-slate-700">Mitigation: </span>
+                {driver.suggestedAction}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 4. Macroeconomic & Stress Test Scenarios */}
-      <div className="p-5 rounded-2xl glass-panel space-y-4">
-        <div>
-          <h3 className="text-sm font-bold text-white tracking-tight">
-            Stress Test & Vulnerability Scenarios
-          </h3>
-          <p className="text-xs text-slate-400">Simulated downside risks and impact on runway depletion</p>
+      {/* 4. Stress Testing Matrix */}
+      <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3.5">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">Macroeconomic Stress Testing</h3>
+            <p className="text-xs text-slate-500">Simulated downside scenarios and capital resilience</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {stressTestScenarios.map((st, idx) => (
-            <div key={idx} className="p-4 rounded-xl bg-[#111827] border border-[#1e293b] space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {stressTests.map((test, idx) => (
+            <div
+              key={idx}
+              className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-xs space-y-2.5"
+            >
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-white">{st.name}</h4>
-                <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
-                  {st.probability}
+                <h4 className="text-xs font-bold text-slate-900">{test.name}</h4>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    test.resilienceRating === 'High Resilience'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-rose-50 text-rose-700 border border-rose-200'
+                  }`}
+                >
+                  {test.resilienceRating}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/20 text-xs font-bold text-rose-400 font-mono">
-                {st.estimatedRunwayImpact}
+
+              <p className="text-xs text-slate-600 leading-relaxed">{test.description}</p>
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-[11px]">
+                <div>
+                  <span className="text-slate-500 block">Simulated Runway</span>
+                  <span className="font-bold text-slate-900">{test.projectedRunwayMonths} mos</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">Capital Impact</span>
+                  <span className="font-bold text-rose-600">
+                    -{formatCurrency(test.capitalImpact, true)}
+                  </span>
+                </div>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">{st.description}</p>
             </div>
           ))}
         </div>

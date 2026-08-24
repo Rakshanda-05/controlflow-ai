@@ -4,30 +4,20 @@ import {
   Bot,
   User,
   Sparkles,
-  Zap,
+  HelpCircle,
   TrendingUp,
-  ShieldAlert,
+  AlertTriangle,
   ArrowRight,
   RotateCcw,
-  Layers,
-  HelpCircle,
+  DollarSign,
+  Zap,
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
 
 export const AssistantPage: React.FC = () => {
-  const { assistantMessages, isAssistantThinking, sendAssistantQuery } = useFinancial();
-  const [inputQuery, setInputQuery] = useState('');
+  const { assistantMessages, askAssistant, isAssistantLoading, formatCurrency } = useFinancial();
+  const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const quickPrompts = [
-    'Why did expenses increase this month?',
-    'What is our biggest financial risk?',
-    'Which category is overspending?',
-    'How much cash runway do we have?',
-    'What happens if expenses increase by 20%?',
-    'How can we extend runway to 12 months?',
-    'Show me flagged transaction anomalies',
-  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -35,82 +25,71 @@ export const AssistantPage: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [assistantMessages, isAssistantThinking]);
+  }, [assistantMessages, isAssistantLoading]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputQuery.trim() || isAssistantThinking) return;
-    sendAssistantQuery(inputQuery);
-    setInputQuery('');
+  const handleSend = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!inputText.trim() || isAssistantLoading) return;
+
+    const query = inputText;
+    setInputText('');
+    await askAssistant(query);
   };
 
-  const handlePromptClick = (prompt: string) => {
-    sendAssistantQuery(prompt);
+  const handlePromptClick = async (prompt: string) => {
+    if (isAssistantLoading) return;
+    await askAssistant(prompt);
   };
 
-  // Helper to render markdown bolding and bullet points nicely
+  const quickPrompts = [
+    'Why did expenses increase this month?',
+    'What is our biggest financial risk right now?',
+    'Which department is spending over budget?',
+    'How can we extend cash runway to 12 months?',
+    'What anomalies were detected this billing cycle?',
+  ];
+
   const formatAssistantText = (text: string) => {
     const lines = text.split('\n');
     return (
-      <div className="space-y-1.5 text-xs md:text-sm text-slate-200 leading-relaxed font-normal">
+      <div className="space-y-1.5 text-xs md:text-sm text-slate-800 leading-relaxed font-normal">
         {lines.map((line, idx) => {
-          if (line.startsWith('### ')) {
+          if (line.startsWith('• ') || line.startsWith('- ')) {
             return (
-              <h4 key={idx} className="font-bold text-white text-sm md:text-base mt-3 mb-1">
-                {line.replace('### ', '')}
-              </h4>
-            );
-          }
-          if (line.startsWith('## ')) {
-            return (
-              <h3 key={idx} className="font-bold text-white text-base md:text-lg mt-3 mb-1">
-                {line.replace('## ', '')}
-              </h3>
-            );
-          }
-          if (line.startsWith('- ')) {
-            return (
-              <div key={idx} className="flex items-start gap-2 ml-2">
-                <span className="text-brand-400 font-bold">•</span>
-                <span dangerouslySetInnerHTML={{ __html: renderInlineBold(line.slice(2)) }} />
+              <div key={idx} className="flex items-start gap-2 pl-1">
+                <span className="text-slate-400 mt-1">•</span>
+                <span>{line.substring(2)}</span>
               </div>
             );
           }
-          if (line.match(/^\d+\. /)) {
+          if (line.match(/^\d+\./)) {
             return (
-              <div key={idx} className="flex items-start gap-2 ml-2">
-                <span className="text-brand-400 font-bold">{line.match(/^\d+\./)?.[0]}</span>
-                <span dangerouslySetInnerHTML={{ __html: renderInlineBold(line.replace(/^\d+\. /, '')) }} />
+              <div key={idx} className="flex items-start gap-2 pl-1 font-medium text-slate-900">
+                <span>{line}</span>
               </div>
             );
           }
-          if (!line.trim()) {
+          if (line.trim() === '') {
             return <div key={idx} className="h-1" />;
           }
-          return (
-            <p key={idx} dangerouslySetInnerHTML={{ __html: renderInlineBold(line) }} />
-          );
+          return <p key={idx}>{line}</p>;
         })}
       </div>
     );
   };
 
-  const renderInlineBold = (str: string) => {
-    return str.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>');
-  };
-
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto h-[calc(100vh-4.5rem)] flex flex-col space-y-3">
+    <div className="p-4 md:p-6 max-w-4xl mx-auto h-[calc(100vh-4.5rem)] flex flex-col space-y-3 w-full">
       {/* Quick Prompt Chips */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 shrink-0">
-        <span className="text-[11px] font-medium text-slate-400 uppercase shrink-0 mr-1 flex items-center gap-1">
-          <Zap className="w-3 h-3 text-indigo-400" /> Prompts:
+        <span className="text-[11px] font-medium text-slate-500 uppercase shrink-0 mr-1 flex items-center gap-1">
+          <Zap className="w-3 h-3 text-slate-600" /> Prompts:
         </span>
         {quickPrompts.map((p, idx) => (
           <button
             key={idx}
             onClick={() => handlePromptClick(p)}
-            className="px-2.5 py-1 rounded-lg bg-[#111726] hover:bg-indigo-600 hover:text-white text-slate-300 text-xs font-medium border border-[#1e293b] transition-colors shrink-0 whitespace-nowrap"
+            className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-900 hover:text-white text-slate-700 text-xs font-medium border border-slate-200 shadow-xs transition-colors shrink-0 whitespace-nowrap"
           >
             {p}
           </button>
@@ -118,7 +97,7 @@ export const AssistantPage: React.FC = () => {
       </div>
 
       {/* Chat Messages Container */}
-      <div className="flex-1 bg-[#111726] rounded-xl p-4 md:p-5 overflow-y-auto space-y-4 border border-[#1e293b]">
+      <div className="flex-1 bg-white rounded-xl p-4 md:p-5 overflow-y-auto space-y-4 border border-slate-200 shadow-xs">
         {assistantMessages.map((msg) => {
           const isUser = msg.sender === 'user';
           return (
@@ -127,7 +106,7 @@ export const AssistantPage: React.FC = () => {
               className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
             >
               {!isUser && (
-                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+                <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xs">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
@@ -135,13 +114,13 @@ export const AssistantPage: React.FC = () => {
               <div
                 className={`max-w-2xl rounded-xl p-3.5 space-y-2.5 ${
                   isUser
-                    ? 'bg-indigo-600 text-white rounded-br-none'
-                    : 'bg-[#0e1422] text-slate-200 border border-[#1e293b] rounded-bl-none shadow-sm'
+                    ? 'bg-slate-900 text-white rounded-br-none shadow-xs'
+                    : 'bg-slate-50 text-slate-900 border border-slate-200 rounded-bl-none shadow-xs'
                 }`}
               >
                 {/* Header */}
-                <div className="flex items-center justify-between text-[10px] opacity-70 border-b border-white/10 pb-1 mb-1">
-                  <span className="font-semibold">{isUser ? 'You' : 'Finance Assistant'}</span>
+                <div className="flex items-center justify-between text-[10px] opacity-70 border-b border-black/5 pb-1 mb-1">
+                  <span className="font-semibold">{isUser ? 'You' : 'Financial Assistant'}</span>
                   <span>{msg.timestamp}</span>
                 </div>
 
@@ -154,35 +133,36 @@ export const AssistantPage: React.FC = () => {
 
                 {/* Optional Metric Highlight Cards */}
                 {msg.metrics && msg.metrics.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-white/10">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-200">
                     {msg.metrics.map((m, idx) => (
-                      <div key={idx} className="p-2.5 rounded-xl bg-[#0b0f19]/80 border border-slate-700">
-                        <span className="text-[10px] uppercase font-semibold text-slate-400 block">
+                      <div key={idx} className="p-2.5 rounded-lg bg-white border border-slate-200">
+                        <span className="text-[10px] uppercase font-semibold text-slate-500 block">
                           {m.label}
                         </span>
-                        <span className="text-xs font-bold text-white font-mono">{m.value}</span>
-                        {m.delta && (
-                          <span className="text-[10px] text-brand-300 block font-medium">
-                            {m.delta}
-                          </span>
-                        )}
+                        <span
+                          className={`text-sm font-bold font-mono ${
+                            m.isAlert ? 'text-rose-600' : 'text-slate-900'
+                          }`}
+                        >
+                          {m.value}
+                        </span>
                       </div>
                     ))}
                   </div>
                 )}
 
-                {/* Suggested Follow-Ups */}
-                {msg.suggestedFollowUps && msg.suggestedFollowUps.length > 0 && (
-                  <div className="pt-2 border-t border-white/10 space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-slate-400">
-                      Suggested Inquiries:
+                {/* Recommended Follow-up Prompt Chips */}
+                {msg.followUps && msg.followUps.length > 0 && (
+                  <div className="pt-2 border-t border-slate-200 space-y-1.5">
+                    <span className="text-[10px] uppercase font-semibold text-slate-500 block">
+                      Suggested Follow-ups:
                     </span>
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {msg.suggestedFollowUps.map((fu, idx) => (
+                    <div className="flex flex-wrap gap-1.5">
+                      {msg.followUps.map((fu, idx) => (
                         <button
                           key={idx}
                           onClick={() => handlePromptClick(fu)}
-                          className="px-2.5 py-1 text-[11px] font-medium rounded-lg bg-slate-800 hover:bg-brand-600 text-brand-300 hover:text-white border border-slate-700 transition-colors"
+                          className="px-2.5 py-1 text-[11px] rounded-md bg-white hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
                         >
                           {fu}
                         </button>
@@ -193,24 +173,31 @@ export const AssistantPage: React.FC = () => {
               </div>
 
               {isUser && (
-                <div className="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300 shrink-0 border border-slate-700">
-                  <User className="w-4 h-4" />
+                <div className="w-7 h-7 rounded-lg bg-slate-200 flex items-center justify-center text-slate-700 shrink-0">
+                  <User className="w-3.5 h-3.5" />
                 </div>
               )}
             </div>
           );
         })}
 
-        {isAssistantThinking && (
-          <div className="flex gap-3.5 justify-start">
-            <div className="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white shrink-0 animate-pulse shadow-glow">
-              <Bot className="w-4 h-4" />
+        {/* Loading Indicator */}
+        {isAssistantLoading && (
+          <div className="flex gap-3 items-center text-slate-500 text-xs">
+            <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0">
+              <Bot className="w-3.5 h-3.5" />
             </div>
-            <div className="bg-[#131c2e] border border-[#23324d] rounded-2xl p-4 rounded-bl-none flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-brand-400 animate-bounce" />
-              <span className="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.2s]" />
-              <span className="w-2 h-2 rounded-full bg-brand-400 animate-bounce [animation-delay:0.4s]" />
-              <span className="text-xs text-slate-400 ml-1">Analyzing financial ledger & models...</span>
+            <div className="flex items-center gap-1.5 p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" />
+              <div
+                className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"
+                style={{ animationDelay: '0.2s' }}
+              />
+              <div
+                className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"
+                style={{ animationDelay: '0.4s' }}
+              />
+              <span className="ml-2 font-medium text-slate-600">Analyzing financial data...</span>
             </div>
           </div>
         )}
@@ -218,21 +205,23 @@ export const AssistantPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Query Input Bar */}
-      <form onSubmit={handleSubmit} className="shrink-0 relative flex items-center gap-2">
+      {/* Input Form Bar */}
+      <form onSubmit={handleSend} className="flex gap-2 shrink-0">
         <input
           type="text"
-          placeholder="Ask anything (e.g. 'What happens if we reduce marketing spend by 30%?')..."
-          value={inputQuery}
-          onChange={(e) => setInputQuery(e.target.value)}
-          className="w-full pl-4 pr-12 py-3.5 bg-[#131c2e] border border-[#23324d] rounded-xl text-xs md:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 shadow-lg"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Ask about burn rate, runway, department spend, or cost savings..."
+          disabled={isAssistantLoading}
+          className="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 shadow-xs"
         />
         <button
           type="submit"
-          disabled={!inputQuery.trim() || isAssistantThinking}
-          className="absolute right-2 p-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white disabled:opacity-40 transition-all shadow-glow"
+          disabled={!inputText.trim() || isAssistantLoading}
+          className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Ask</span>
         </button>
       </form>
     </div>

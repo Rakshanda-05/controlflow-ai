@@ -2,176 +2,177 @@ import React, { useState, useMemo } from 'react';
 import {
   Search,
   Filter,
-  ArrowUpDown,
   ShieldAlert,
-  CheckCircle,
-  Clock,
+  AlertTriangle,
+  Sparkles,
+  ArrowUpDown,
+  Download,
+  ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  AlertTriangle,
-  Receipt,
-  Download,
+  PlusCircle,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
-import { Transaction, RiskLevel, TransactionStatus } from '../types';
+import { FinancialTransaction, RiskLevel, TransactionStatus } from '../types';
 
 export const TransactionsPage: React.FC = () => {
   const { transactions, setSelectedTransaction, formatCurrency } = useFinancial();
 
+  // Filters & State
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedRisk, setSelectedRisk] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedType, setSelectedType] = useState('all');
-  const [sortField, setSortField] = useState<'date' | 'amount' | 'merchant' | 'riskLevel'>('date');
-  const [sortAsc, setSortAsc] = useState(false);
+  const [selectedRisk, setSelectedRisk] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [sortField, setSortField] = useState<keyof FinancialTransaction>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
-  // Filter and sort transactions
+  // Categories list
+  const categories = useMemo(() => {
+    const set = new Set(transactions.map((t) => t.category));
+    return ['all', ...Array.from(set)];
+  }, [transactions]);
+
+  // Filtered & Sorted Transactions
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((tx) => {
-      // Search
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        const match =
-          tx.merchant.toLowerCase().includes(q) ||
-          tx.category.toLowerCase().includes(q) ||
-          tx.department.toLowerCase().includes(q) ||
-          (tx.anomalyReason && tx.anomalyReason.toLowerCase().includes(q)) ||
-          tx.id.toLowerCase().includes(q);
-        if (!match) return false;
-      }
+    return transactions
+      .filter((tx) => {
+        // Search
+        const query = searchQuery.toLowerCase();
+        const matchesSearch =
+          tx.merchant.toLowerCase().includes(query) ||
+          tx.category.toLowerCase().includes(query) ||
+          tx.department.toLowerCase().includes(query) ||
+          (tx.notes && tx.notes.toLowerCase().includes(query));
 
-      // Category
-      if (selectedCategory !== 'all' && tx.category !== selectedCategory) {
-        return false;
-      }
+        // Risk Level
+        const matchesRisk = selectedRisk === 'all' || tx.riskLevel === selectedRisk;
 
-      // Risk
-      if (selectedRisk !== 'all' && tx.riskLevel !== selectedRisk) {
-        return false;
-      }
+        // Status
+        const matchesStatus = selectedStatus === 'all' || tx.status === selectedStatus;
 
-      // Status
-      if (selectedStatus !== 'all' && tx.status !== selectedStatus) {
-        return false;
-      }
+        // Category
+        const matchesCategory = selectedCategory === 'all' || tx.category === selectedCategory;
 
-      // Type
-      if (selectedType !== 'all' && tx.type !== selectedType) {
-        return false;
-      }
+        // Type
+        const matchesType = selectedType === 'all' || tx.type === selectedType;
 
-      return true;
-    });
-  }, [transactions, searchQuery, selectedCategory, selectedRisk, selectedStatus, selectedType]);
+        return matchesSearch && matchesRisk && matchesStatus && matchesCategory && matchesType;
+      })
+      .sort((a, b) => {
+        let valA = a[sortField];
+        let valB = b[sortField];
 
-  // Sort
-  const sortedTransactions = useMemo(() => {
-    return [...filteredTransactions].sort((a, b) => {
-      if (sortField === 'amount') {
-        return sortAsc ? a.amount - b.amount : b.amount - a.amount;
-      }
-      if (sortField === 'merchant') {
-        return sortAsc ? a.merchant.localeCompare(b.merchant) : b.merchant.localeCompare(a.merchant);
-      }
-      if (sortField === 'riskLevel') {
-        const weight = { critical: 4, high: 3, medium: 2, low: 1 };
-        return sortAsc
-          ? weight[a.riskLevel] - weight[b.riskLevel]
-          : weight[b.riskLevel] - weight[a.riskLevel];
-      }
-      // default date
-      return sortAsc ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date);
-    });
-  }, [filteredTransactions, sortField, sortAsc]);
+        if (typeof valA === 'string') {
+          valA = (valA as string).toLowerCase();
+          valB = ((valB as string) || '').toLowerCase();
+        }
 
-  const totalPages = Math.max(1, Math.ceil(sortedTransactions.length / itemsPerPage));
-  const paginatedTransactions = sortedTransactions.slice(
+        if (valA! < valB!) return sortOrder === 'asc' ? -1 : 1;
+        if (valA! > valB!) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [
+    transactions,
+    searchQuery,
+    selectedRisk,
+    selectedStatus,
+    selectedCategory,
+    selectedType,
+    sortField,
+    sortOrder,
+  ]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const paginatedTransactions = filteredTransactions.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const toggleSort = (field: 'date' | 'amount' | 'merchant' | 'riskLevel') => {
+  const handleSort = (field: keyof FinancialTransaction) => {
     if (sortField === field) {
-      setSortAsc(!sortAsc);
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortAsc(false);
+      setSortOrder('desc');
     }
   };
 
-  const categories = [
-    'all',
-    'Cloud Infrastructure',
-    'Marketing',
-    'Software & Subscriptions',
-    'Payroll & Benefits',
-    'Operations',
-    'Executive & Legal',
-    'Travel & Entertainment',
-    'Office & Hardware',
-    'Sales Revenue',
-  ];
+  const statusBadgeStyles: Record<TransactionStatus, string> = {
+    flagged: 'bg-rose-50 text-rose-700 border border-rose-200',
+    cleared: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+    pending: 'bg-amber-50 text-amber-700 border border-amber-200',
+  };
 
   const riskBadgeStyles: Record<RiskLevel, string> = {
-    critical: 'bg-rose-500/20 text-rose-400 border border-rose-500/40',
-    high: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
-    medium: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/40',
-    low: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40',
+    critical: 'bg-rose-50 text-rose-700 border border-rose-200 font-semibold',
+    high: 'bg-amber-50 text-amber-700 border border-amber-200 font-semibold',
+    medium: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+    low: 'bg-slate-100 text-slate-600 border border-slate-200',
   };
 
-  const statusBadgeStyles: Record<TransactionStatus, string> = {
-    cleared: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-    flagged: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
-    pending: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
+  const exportCSV = () => {
+    const headers = 'ID,Date,Merchant,Amount,Category,Department,Type,Status,RiskLevel,Notes\n';
+    const rows = filteredTransactions
+      .map(
+        (t) =>
+          `"${t.id}","${t.date}","${t.merchant}",${t.amount},"${t.category}","${t.department}","${t.type}","${t.status}","${t.riskLevel}","${t.notes || ''}"`
+      )
+      .join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `financial-ledger-${new Date().toISOString().split('T')[0]}.csv`);
+    a.click();
   };
 
-  const anomaliesCount = transactions.filter((t) => t.status === 'flagged').length;
   const criticalCount = transactions.filter((t) => t.riskLevel === 'critical').length;
   const flaggedVolume = transactions
     .filter((t) => t.status === 'flagged')
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
-      {/* Top Anomaly Summary Banner */}
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto w-full">
+      {/* Top Outlier Summary Banner */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-rose-50 text-rose-600">
             <ShieldAlert className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium block">Critical Outliers</span>
-            <p className="text-lg font-bold text-rose-400 tracking-tight">{criticalCount} Urgent Items</p>
+            <span className="text-xs text-slate-500 font-medium block">Critical Outliers</span>
+            <p className="text-lg font-bold text-rose-600 tracking-tight">{criticalCount} Flagged Items</p>
           </div>
         </div>
 
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-amber-50 text-amber-600">
             <AlertTriangle className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium block">Flagged Volume</span>
-            <p className="text-lg font-bold text-amber-400 tracking-tight">{formatCurrency(flaggedVolume, true)}</p>
+            <span className="text-xs text-slate-500 font-medium block">Flagged Volume</span>
+            <p className="text-lg font-bold text-amber-700 tracking-tight">{formatCurrency(flaggedVolume, true)}</p>
           </div>
         </div>
 
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium block">Anomaly Engine</span>
-            <p className="text-lg font-bold text-white tracking-tight">Statistical Z-Score + IQR</p>
+            <span className="text-xs text-slate-500 font-medium block">Outlier Detection</span>
+            <p className="text-lg font-bold text-slate-900 tracking-tight">Statistical Z-Score + IQR</p>
           </div>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+      <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
           {/* Search Input */}
           <div className="relative w-full md:w-80">
@@ -184,7 +185,7 @@ export const TransactionsPage: React.FC = () => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-9 pr-4 py-2 bg-[#131c2e] border border-[#1f2d47] rounded-xl text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-slate-900"
             />
           </div>
 
@@ -197,7 +198,7 @@ export const TransactionsPage: React.FC = () => {
                 setSelectedRisk(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 bg-[#131c2e] border border-[#1f2d47] rounded-xl text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-slate-900"
             >
               <option value="all">All Risk Levels</option>
               <option value="critical">Critical Risk</option>
@@ -213,7 +214,7 @@ export const TransactionsPage: React.FC = () => {
                 setSelectedStatus(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 bg-[#131c2e] border border-[#1f2d47] rounded-xl text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-slate-900"
             >
               <option value="all">All Statuses</option>
               <option value="flagged">Flagged Only</option>
@@ -228,7 +229,7 @@ export const TransactionsPage: React.FC = () => {
                 setSelectedType(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 bg-[#131c2e] border border-[#1f2d47] rounded-xl text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-slate-900"
             >
               <option value="all">All Outflows & Inflows</option>
               <option value="expense">Expenses Only</option>
@@ -239,7 +240,7 @@ export const TransactionsPage: React.FC = () => {
 
         {/* Category Filter Pills Horizontal Scroll */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs">
-          <span className="text-[11px] text-slate-500 font-semibold uppercase shrink-0 mr-1">
+          <span className="text-[11px] text-slate-400 font-semibold uppercase shrink-0 mr-1">
             Category:
           </span>
           {categories.map((cat) => (
@@ -249,212 +250,216 @@ export const TransactionsPage: React.FC = () => {
                 setSelectedCategory(cat);
                 setCurrentPage(1);
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-xs capitalize transition-colors shrink-0 ${
                 selectedCategory === cat
-                  ? 'bg-brand-600 text-white'
-                  : 'bg-[#141c2e] text-slate-400 hover:text-slate-200 hover:bg-[#1a263d]'
+                  ? 'bg-slate-900 text-white font-medium shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
-              {cat === 'all' ? 'All Categories' : cat}
+              {cat}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Transaction Table */}
-      <div className="rounded-2xl glass-panel overflow-hidden border border-[#1f293d]">
+      {/* Transactions Data Table */}
+      <div className="rounded-xl bg-white border border-slate-200 shadow-xs overflow-hidden">
+        {/* Table Top Controls & Count */}
+        <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-600 font-medium">
+              Showing <span className="text-slate-900 font-bold">{filteredTransactions.length}</span> recorded entries
+            </span>
+          </div>
+
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs transition-colors"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-slate-600" />
+            <span>Export CSV</span>
+          </button>
+        </div>
+
+        {/* Dense Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#0f172a] text-slate-400 uppercase font-semibold text-[11px] border-b border-[#1f293d] select-none">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="bg-slate-50 text-slate-500 uppercase font-semibold text-[11px] border-b border-slate-200">
               <tr>
                 <th
-                  onClick={() => toggleSort('date')}
-                  className="py-3.5 px-4 cursor-pointer hover:text-white"
+                  onClick={() => handleSort('date')}
+                  className="py-3 px-4 cursor-pointer hover:text-slate-900 transition-colors whitespace-nowrap"
                 >
                   <div className="flex items-center gap-1">
                     <span>Date</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
                   </div>
                 </th>
                 <th
-                  onClick={() => toggleSort('merchant')}
-                  className="py-3.5 px-4 cursor-pointer hover:text-white"
+                  onClick={() => handleSort('merchant')}
+                  className="py-3 px-4 cursor-pointer hover:text-slate-900 transition-colors"
                 >
                   <div className="flex items-center gap-1">
-                    <span>Merchant / Vendor</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <span>Merchant / Destination</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
                   </div>
                 </th>
-                <th className="py-3.5 px-4">Category & Department</th>
                 <th
-                  onClick={() => toggleSort('amount')}
-                  className="py-3.5 px-4 cursor-pointer hover:text-white text-right"
+                  onClick={() => handleSort('category')}
+                  className="py-3 px-4 cursor-pointer hover:text-slate-900 transition-colors"
+                >
+                  <div className="flex items-center gap-1">
+                    <span>Category & Department</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort('amount')}
+                  className="py-3 px-4 text-right cursor-pointer hover:text-slate-900 transition-colors whitespace-nowrap"
                 >
                   <div className="flex items-center justify-end gap-1">
-                    <span>Amount</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <span>Amount (INR ₹)</span>
+                    <ArrowUpDown className="w-3 h-3 opacity-60" />
                   </div>
                 </th>
-                <th className="py-3.5 px-4 text-center">Type</th>
-                <th className="py-3.5 px-4 text-center">Status</th>
-                <th
-                  onClick={() => toggleSort('riskLevel')}
-                  className="py-3.5 px-4 cursor-pointer hover:text-white text-center"
-                >
-                  <div className="flex items-center justify-center gap-1">
-                    <span>Risk Level</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+                <th className="py-3 px-4 text-center">Type</th>
+                <th className="py-3 px-4 text-center">Status</th>
+                <th className="py-3 px-4 text-center">Risk Level</th>
+                <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-
-            <tbody className="divide-y divide-[#1e293b]/60">
+            <tbody className="divide-y divide-slate-100">
               {paginatedTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
-                    <Receipt className="w-8 h-8 mx-auto mb-2 text-slate-500 opacity-50" />
-                    <p className="text-sm font-semibold text-slate-300">No transactions found</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Try adjusting your filters or search terms</p>
+                  <td colSpan={8} className="py-12 text-center text-slate-500">
+                    No transactions match your current filters.
                   </td>
                 </tr>
               ) : (
-                paginatedTransactions.map((tx) => {
-                  const isFlagged = tx.status === 'flagged' || tx.riskLevel === 'critical' || tx.riskLevel === 'high';
-                  return (
-                    <tr
-                      key={tx.id}
-                      onClick={() => setSelectedTransaction(tx)}
-                      className={`hover:bg-[#151f33] transition-colors cursor-pointer group ${
-                        isFlagged ? 'bg-rose-950/5' : ''
-                      }`}
-                    >
-                      {/* Date */}
-                      <td className="py-3 px-4 text-slate-300 font-mono text-[11px] whitespace-nowrap">
-                        {tx.date}
-                      </td>
+                paginatedTransactions.map((tx) => (
+                  <tr
+                    key={tx.id}
+                    onClick={() => setSelectedTransaction(tx)}
+                    className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                  >
+                    {/* Date */}
+                    <td className="py-3 px-4 text-slate-600 font-mono whitespace-nowrap">
+                      {tx.date}
+                    </td>
 
-                      {/* Merchant */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-white group-hover:text-brand-400 transition-colors truncate max-w-[180px]">
-                            {tx.merchant}
-                          </span>
-                          {tx.anomalyScore && tx.anomalyScore > 0.8 && (
-                            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" title="High Anomaly Score" />
-                          )}
-                        </div>
-                        {tx.notes && (
-                          <p className="text-[10px] text-slate-400 truncate max-w-[200px]">{tx.notes}</p>
+                    {/* Merchant & Flags */}
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate max-w-[180px]">
+                          {tx.merchant}
+                        </span>
+                        {tx.anomalyScore && tx.anomalyScore > 0.8 && (
+                          <span className="w-2 h-2 rounded-full bg-rose-500" title="High Anomaly Score" />
                         )}
-                      </td>
+                      </div>
+                      {tx.notes && (
+                        <p className="text-[10px] text-slate-500 truncate max-w-[200px]">{tx.notes}</p>
+                      )}
+                    </td>
 
-                      {/* Category & Dept */}
-                      <td className="py-3 px-4">
-                        <span className="text-slate-200 font-medium block truncate max-w-[160px]">
-                          {tx.category}
-                        </span>
-                        <span className="text-[10px] text-slate-400">{tx.department}</span>
-                      </td>
+                    {/* Category & Dept */}
+                    <td className="py-3 px-4">
+                      <span className="text-slate-800 font-medium block truncate max-w-[160px]">
+                        {tx.category}
+                      </span>
+                      <span className="text-[10px] text-slate-500">{tx.department}</span>
+                    </td>
 
-                      {/* Amount */}
-                      <td className="py-3 px-4 text-right font-mono font-bold whitespace-nowrap">
-                        <span
-                          className={
-                            tx.type === 'revenue' ? 'text-emerald-400' : 'text-slate-100'
-                          }
-                        >
-                          {tx.type === 'revenue' ? '+' : ''}
-                          {formatCurrency(tx.amount)}
-                        </span>
-                      </td>
+                    {/* Amount */}
+                    <td className="py-3 px-4 text-right font-mono font-semibold whitespace-nowrap">
+                      <span
+                        className={
+                          tx.type === 'revenue' ? 'text-emerald-600 font-bold' : 'text-slate-900'
+                        }
+                      >
+                        {tx.type === 'revenue' ? '+' : ''}
+                        {formatCurrency(tx.amount)}
+                      </span>
+                    </td>
 
-                      {/* Type */}
-                      <td className="py-3 px-4 text-center">
-                        <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                            tx.type === 'revenue'
-                              ? 'bg-emerald-500/10 text-emerald-400'
-                              : 'bg-slate-800 text-slate-300'
-                          }`}
-                        >
-                          {tx.type}
-                        </span>
-                      </td>
+                    {/* Type */}
+                    <td className="py-3 px-4 text-center">
+                      <span
+                        className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded ${
+                          tx.type === 'revenue'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {tx.type}
+                      </span>
+                    </td>
 
-                      {/* Status */}
-                      <td className="py-3 px-4 text-center">
-                        <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                            statusBadgeStyles[tx.status]
-                          }`}
-                        >
-                          {tx.status}
-                        </span>
-                      </td>
+                    {/* Status */}
+                    <td className="py-3 px-4 text-center">
+                      <span
+                        className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded-full ${
+                          statusBadgeStyles[tx.status]
+                        }`}
+                      >
+                        {tx.status}
+                      </span>
+                    </td>
 
-                      {/* Risk Level */}
-                      <td className="py-3 px-4 text-center">
-                        <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                            riskBadgeStyles[tx.riskLevel]
-                          }`}
-                        >
-                          {tx.riskLevel}
-                        </span>
-                      </td>
+                    {/* Risk Level */}
+                    <td className="py-3 px-4 text-center">
+                      <span
+                        className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded-full ${
+                          riskBadgeStyles[tx.riskLevel]
+                        }`}
+                      >
+                        {tx.riskLevel}
+                      </span>
+                    </td>
 
-                      {/* Action */}
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedTransaction(tx);
-                          }}
-                          className="px-2.5 py-1 text-[11px] font-semibold rounded bg-[#162035] text-brand-400 hover:bg-brand-600 hover:text-white border border-[#23324d] transition-colors"
-                        >
-                          Inspect
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
+                    {/* Action */}
+                    <td className="py-3 px-4 text-right">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTransaction(tx);
+                        }}
+                        className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-slate-100 text-slate-700 hover:bg-slate-900 hover:text-white border border-slate-200 transition-colors"
+                      >
+                        Inspect
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        <div className="p-4 border-t border-[#1f293d] bg-[#0d1424] flex items-center justify-between text-xs text-slate-400">
-          <div>
-            Showing <span className="font-bold text-white">{sortedTransactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}</span> to{' '}
-            <span className="font-bold text-white">
-              {Math.min(currentPage * itemsPerPage, sortedTransactions.length)}
-            </span>{' '}
-            of <span className="font-bold text-white">{sortedTransactions.length}</span> transactions
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="p-1.5 rounded-lg border border-[#23324d] hover:bg-[#18233c] disabled:opacity-40"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="font-mono text-slate-300">
+        {/* Pagination Bar */}
+        {totalPages > 1 && (
+          <div className="p-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/50">
+            <span className="text-xs text-slate-500">
               Page {currentPage} of {totalPages}
             </span>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="p-1.5 rounded-lg border border-[#23324d] hover:bg-[#18233c] disabled:opacity-40"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

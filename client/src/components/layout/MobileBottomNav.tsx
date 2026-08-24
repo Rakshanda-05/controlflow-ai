@@ -18,7 +18,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu }) 
   const mainTabs: Array<{ id: NavTab; label: string; icon: React.ReactNode; badge?: number }> = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Overview',
       icon: <LayoutDashboard className="w-5 h-5" />,
     },
     {
@@ -40,7 +40,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu }) 
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0e1422]/95 backdrop-blur-md border-t border-[#1e293b] px-2 py-1 flex items-center justify-around shadow-2xl safe-area-inset-bottom">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 flex items-center justify-around shadow-sm safe-area-inset-bottom">
       {mainTabs.map((tab) => {
         const isActive = currentTab === tab.id;
         return (
@@ -48,7 +48,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu }) 
             key={tab.id}
             onClick={() => setCurrentTab(tab.id)}
             className={`flex flex-col items-center justify-center py-1 px-3 rounded-lg text-[10px] font-medium transition-colors relative ${
-              isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              isActive ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-800'
             }`}
           >
             <div className="relative">
@@ -67,7 +67,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu }) 
       {/* More / All Modules Button */}
       <button
         onClick={onOpenMenu}
-        className="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-[10px] font-medium text-slate-400 hover:text-slate-200 transition-colors"
+        className="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-[10px] font-medium text-slate-500 hover:text-slate-800 transition-colors"
       >
         <Menu className="w-5 h-5" />
         <span className="mt-0.5">More</span>

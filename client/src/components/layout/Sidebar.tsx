@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       label: 'Transactions',
       icon: <Receipt className="w-4 h-4" />,
       badge: dashboard.quickStats?.anomalyCount || 7,
-      badgeColor: 'bg-rose-500/15 text-rose-400 border border-rose-500/30',
+      badgeColor: 'bg-rose-50 text-rose-700 border border-rose-200',
     },
     {
       id: 'cashflow',
@@ -53,30 +53,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       label: 'Budgets',
       icon: <PieChart className="w-4 h-4" />,
       badge: '1 Over',
-      badgeColor: 'bg-amber-500/15 text-amber-400 border border-amber-500/30',
+      badgeColor: 'bg-amber-50 text-amber-700 border border-amber-200',
     },
     {
       id: 'insights',
-      label: 'Insights',
+      label: 'Recommendations',
       icon: <Lightbulb className="w-4 h-4" />,
       badge: (insightCounts?.critical || 0) + (insightCounts?.high || 0),
-      badgeColor: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30',
+      badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
     },
     {
       id: 'risk',
-      label: 'Risk Monitor',
+      label: 'Risk Alerts',
       icon: <ShieldCheck className="w-4 h-4" />,
       badge: `${riskAssessment?.overallScore || 68}`,
-      badgeColor: 'bg-slate-800 text-slate-300 border border-slate-700',
+      badgeColor: 'bg-slate-100 text-slate-700 border border-slate-200',
     },
     {
       id: 'assistant',
-      label: 'Finance Assistant',
+      label: 'Financial Assistant',
       icon: <MessageSquare className="w-4 h-4" />,
     },
     {
       id: 'simulator',
-      label: 'Scenario Simulator',
+      label: 'Scenario Planning',
       icon: <SlidersHorizontal className="w-4 h-4" />,
     },
     {
@@ -95,7 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <>
       {/* Mobile Backdrop Overlay */}
       <div
-        className={`fixed inset-0 bg-black/70 z-50 lg:hidden backdrop-blur-sm transition-opacity duration-200 ${
+        className={`fixed inset-0 bg-slate-900/40 z-50 lg:hidden backdrop-blur-xs transition-opacity duration-200 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -103,19 +103,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar Drawer Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 max-w-[85vw] bg-[#0e1422] border-r border-[#1e293b] flex flex-col transition-transform duration-200 ease-in-out shadow-2xl lg:shadow-none lg:static lg:w-64 lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 max-w-[85vw] bg-white border-r border-slate-200 flex flex-col transition-transform duration-200 ease-in-out shadow-lg lg:shadow-none lg:static lg:w-64 lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Header */}
-        <div className="p-4 border-b border-[#1e293b] flex items-center justify-between">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shadow-xs">
               <Wallet className="w-4 h-4" />
             </div>
             <div>
-              <span className="font-bold text-white tracking-tight text-base">ControlFlow</span>
-              <p className="text-[11px] text-slate-400">Finance Controller</p>
+              <span className="font-bold text-slate-900 tracking-tight text-base">ControlFlow</span>
+              <p className="text-[11px] text-slate-500 font-medium">Finance Controller</p>
             </div>
           </div>
 
@@ -123,26 +123,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <button
             onClick={onClose}
             aria-label="Close menu"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#1a2336] lg:hidden"
+            className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 lg:hidden"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Company Summary Card */}
-        <div className="p-3 border-b border-[#1e293b]/70 bg-[#090d17]">
-          <div className="p-2.5 rounded-lg bg-[#121929] border border-[#1e293b] flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-              <Building2 className="w-3.5 h-3.5 text-indigo-400" />
+        <div className="p-3 border-b border-slate-100 bg-slate-50/70">
+          <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+              <Building2 className="w-3.5 h-3.5 text-slate-600" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-slate-200 truncate">
+              <p className="text-xs font-semibold text-slate-800 truncate">
                 {dashboard?.company?.name || 'Apex Technologies'}
               </p>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
                 <span>{formatCurrency(dashboard?.company?.arr || 14200000, true)} ARR</span>
                 <span>•</span>
-                <span className="text-emerald-400 font-medium">Series A</span>
+                <span className="text-emerald-700 font-medium">Series A</span>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         {/* Navigation Items */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
             Menu
           </div>
           {navItems.map((item) => {
@@ -159,19 +159,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                    : 'text-slate-300 hover:text-white hover:bg-[#151d2e]'
+                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={isActive ? 'text-white' : 'text-slate-400'}>{item.icon}</span>
+                  <span className={isActive ? 'text-white' : 'text-slate-500'}>{item.icon}</span>
                   <span>{item.label}</span>
                 </div>
                 {item.badge !== undefined && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
                       isActive ? 'bg-white/20 text-white' : item.badgeColor
                     }`}
                   >
@@ -184,10 +184,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Controller Status Footer */}
-        <div className="p-3 border-t border-[#1e293b] bg-[#090d17]">
-          <div className="flex items-center gap-2 text-xs text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-[11px] text-slate-400 font-medium">System Monitoring Active</span>
+        <div className="p-3 border-t border-slate-100 bg-slate-50/70">
+          <div className="flex items-center gap-2 text-xs text-slate-600">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-[11px] text-slate-600 font-medium">Live Ledger Sync</span>
           </div>
         </div>
       </aside>

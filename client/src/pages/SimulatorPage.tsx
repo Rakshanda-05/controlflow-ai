@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SlidersHorizontal,
-  Sparkles,
   TrendingUp,
   TrendingDown,
-  DollarSign,
   Clock,
-  ShieldAlert,
   RotateCcw,
-  Zap,
+  Sparkles,
+  AlertTriangle,
   CheckCircle,
-  ArrowRight,
-  Layers,
+  HelpCircle,
+  BarChart2,
+  DollarSign,
+  UserPlus,
+  Zap,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -24,93 +25,130 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { useFinancial } from '../context/FinancialContext';
+import { ScenarioInputs } from '../types';
 
 export const SimulatorPage: React.FC = () => {
-  const {
-    scenarioInputs,
-    setScenarioInputs,
-    scenarioResult,
-    runScenario,
-    applyPresetScenario,
-    formatCurrency,
-  } = useFinancial();
+  const { scenarioResult, runScenario, formatCurrency } = useFinancial();
 
-  const handleInputChange = (field: keyof typeof scenarioInputs, value: number) => {
-    const updated = { ...scenarioInputs, [field]: value };
-    setScenarioInputs(updated);
-    runScenario(updated);
-  };
+  // Slider State (Rupee defaults)
+  const [scenarioInputs, setScenarioInputs] = useState<ScenarioInputs>({
+    revenueGrowthPct: 0,
+    expenseGrowthPct: 0,
+    headcountDelta: 0,
+    avgSalary: 1200000, // ₹12L default
+    marketingBudgetDelta: 0,
+  });
+
+  // Debounced Scenario calculation
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      runScenario(scenarioInputs);
+    }, 150);
+    return () => clearTimeout(handler);
+  }, [scenarioInputs]);
 
   const handleReset = () => {
-    const defaultInputs = {
+    setScenarioInputs({
       revenueGrowthPct: 0,
       expenseGrowthPct: 0,
-      marketingSpendDelta: 0,
-      newHiresCount: 0,
-      avgHireSalary: 120000,
-    };
-    setScenarioInputs(defaultInputs);
-    runScenario(defaultInputs);
+      headcountDelta: 0,
+      avgSalary: 1200000,
+      marketingBudgetDelta: 0,
+    });
+  };
+
+  const applyPresetScenario = (type: 'recession' | 'expansion' | 'bootstrap' | 'delayed_fundraise') => {
+    switch (type) {
+      case 'recession':
+        setScenarioInputs({
+          revenueGrowthPct: -25,
+          expenseGrowthPct: 5,
+          headcountDelta: 0,
+          avgSalary: 1200000,
+          marketingBudgetDelta: -800000,
+        });
+        break;
+      case 'expansion':
+        setScenarioInputs({
+          revenueGrowthPct: 40,
+          expenseGrowthPct: 15,
+          headcountDelta: 4,
+          avgSalary: 1200000,
+          marketingBudgetDelta: 1600000,
+        });
+        break;
+      case 'bootstrap':
+        setScenarioInputs({
+          revenueGrowthPct: 0,
+          expenseGrowthPct: -20,
+          headcountDelta: -2,
+          avgSalary: 1200000,
+          marketingBudgetDelta: -1200000,
+        });
+        break;
+      case 'delayed_fundraise':
+        setScenarioInputs({
+          revenueGrowthPct: 10,
+          expenseGrowthPct: -15,
+          headcountDelta: -1,
+          avgSalary: 1200000,
+          marketingBudgetDelta: -800000,
+        });
+        break;
+    }
   };
 
   if (!scenarioResult) {
     return (
-      <div className="p-12 text-center text-slate-400">
-        <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-sm font-semibold">Running Financial Scenario Simulation...</p>
+      <div className="p-12 text-center text-slate-500">
+        <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs font-medium">Initializing Scenario Simulator...</p>
       </div>
     );
   }
 
   const { baseline, simulated, impact, aiAnalysis, timelineProjection } = scenarioResult;
 
-  const verdictBadge = {
-    'Accretive Growth': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    Sustainable: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
-    'Moderate Risk': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-    'High Risk': 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-  }[impact.verdict];
-
   return (
-    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto w-full">
       {/* 1. Top Preset Scenarios Bar */}
-      <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-indigo-400" />
-            Stress Test Presets:
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-slate-700" />
+            Scenario Presets:
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => applyPresetScenario('recession')}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-rose-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors"
           >
             📉 Bear Market (-25%)
           </button>
           <button
             onClick={() => applyPresetScenario('expansion')}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-emerald-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors"
           >
             🚀 Expansion (+40%)
           </button>
           <button
             onClick={() => applyPresetScenario('bootstrap')}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-indigo-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
           >
             🛡️ Bootstrap (-20%)
           </button>
           <button
             onClick={() => applyPresetScenario('delayed_fundraise')}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-amber-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
           >
             ⏳ Runway Extension (+5M)
           </button>
           <button
             onClick={handleReset}
             title="Reset to Baseline"
-            className="p-1.5 rounded-lg bg-[#141c2e] text-slate-300 hover:text-white border border-[#1e293b]"
+            className="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -120,26 +158,26 @@ export const SimulatorPage: React.FC = () => {
       {/* 2. Interactive Controls & Side-by-Side Impact */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Interactive Sliders (5 cols) */}
-        <div className="lg:col-span-5 p-4 md:p-5 rounded-xl bg-[#111726] space-y-4 border border-[#1e293b]">
-          <div className="flex items-center justify-between border-b border-[#1e293b] pb-2.5">
+        <div className="lg:col-span-5 p-4 md:p-5 rounded-xl bg-white space-y-4 border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-indigo-400" />
-              <h3 className="text-sm font-bold text-white">Strategic Variables</h3>
+              <SlidersHorizontal className="w-4 h-4 text-slate-700" />
+              <h3 className="text-sm font-bold text-slate-900">Planning Variables</h3>
             </div>
-            <span className="text-[10px] text-slate-400">Live Recalculation</span>
+            <span className="text-[10px] text-slate-500">Live Recalculation</span>
           </div>
 
           {/* Slider 1: Revenue Growth */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-slate-300">Revenue Growth Rate</span>
+              <span className="font-medium text-slate-700">Revenue Growth Rate</span>
               <span
                 className={`font-mono font-bold ${
                   scenarioInputs.revenueGrowthPct > 0
-                    ? 'text-emerald-400'
+                    ? 'text-emerald-600'
                     : scenarioInputs.revenueGrowthPct < 0
-                    ? 'text-rose-400'
-                    : 'text-white'
+                    ? 'text-rose-600'
+                    : 'text-slate-600'
                 }`}
               >
                 {scenarioInputs.revenueGrowthPct > 0 ? '+' : ''}
@@ -152,27 +190,29 @@ export const SimulatorPage: React.FC = () => {
               max="100"
               step="5"
               value={scenarioInputs.revenueGrowthPct}
-              onChange={(e) => handleInputChange('revenueGrowthPct', parseInt(e.target.value, 10))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500"
+              onChange={(e) =>
+                setScenarioInputs({ ...scenarioInputs, revenueGrowthPct: Number(e.target.value) })
+              }
+              className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>-50% (Downturn)</span>
-              <span>0% Baseline</span>
-              <span>+100% (2x Scale)</span>
+            <div className="flex justify-between text-[10px] text-slate-400">
+              <span>-50%</span>
+              <span>Baseline (0%)</span>
+              <span>+100%</span>
             </div>
           </div>
 
-          {/* Slider 2: Expense Growth */}
-          <div className="space-y-2">
+          {/* Slider 2: Expense Inflation */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300">General Expense Inflation</span>
+              <span className="font-medium text-slate-700">General Expense Inflation</span>
               <span
                 className={`font-mono font-bold ${
                   scenarioInputs.expenseGrowthPct > 0
-                    ? 'text-rose-400'
+                    ? 'text-rose-600'
                     : scenarioInputs.expenseGrowthPct < 0
-                    ? 'text-emerald-400'
-                    : 'text-white'
+                    ? 'text-emerald-600'
+                    : 'text-slate-600'
                 }`}
               >
                 {scenarioInputs.expenseGrowthPct > 0 ? '+' : ''}
@@ -185,31 +225,60 @@ export const SimulatorPage: React.FC = () => {
               max="50"
               step="5"
               value={scenarioInputs.expenseGrowthPct}
-              onChange={(e) => handleInputChange('expenseGrowthPct', parseInt(e.target.value, 10))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500"
+              onChange={(e) =>
+                setScenarioInputs({ ...scenarioInputs, expenseGrowthPct: Number(e.target.value) })
+              }
+              className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>-30% (Austerity)</span>
-              <span>0% Baseline</span>
-              <span>+50% (Expansion)</span>
+            <div className="flex justify-between text-[10px] text-slate-400">
+              <span>-30%</span>
+              <span>Baseline (0%)</span>
+              <span>+50%</span>
             </div>
           </div>
 
-          {/* Slider 3: Marketing Spend Shift */}
-          <div className="space-y-2">
+          {/* Slider 3: Headcount Additions */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300">Marketing Budget Adjustment</span>
+              <span className="font-medium text-slate-700">Headcount Additions</span>
+              <span className="font-mono font-bold text-slate-900">
+                {scenarioInputs.headcountDelta > 0 ? '+' : ''}
+                {scenarioInputs.headcountDelta} Roles
+              </span>
+            </div>
+            <input
+              type="range"
+              min="-5"
+              max="15"
+              step="1"
+              value={scenarioInputs.headcountDelta}
+              onChange={(e) =>
+                setScenarioInputs({ ...scenarioInputs, headcountDelta: Number(e.target.value) })
+              }
+              className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
+            />
+            <div className="flex justify-between text-[10px] text-slate-400">
+              <span>-5 Freeze</span>
+              <span>0 Roles</span>
+              <span>+15 Hires</span>
+            </div>
+          </div>
+
+          {/* Slider 4: Marketing Budget Delta */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-slate-700">Marketing Budget Shift</span>
               <span
                 className={`font-mono font-bold ${
-                  scenarioInputs.marketingSpendDelta > 0
-                    ? 'text-rose-400'
-                    : scenarioInputs.marketingSpendDelta < 0
-                    ? 'text-emerald-400'
-                    : 'text-white'
+                  scenarioInputs.marketingBudgetDelta > 0
+                    ? 'text-rose-600'
+                    : scenarioInputs.marketingBudgetDelta < 0
+                    ? 'text-emerald-600'
+                    : 'text-slate-600'
                 }`}
               >
-                {scenarioInputs.marketingSpendDelta > 0 ? '+' : ''}
-                {formatCurrency(scenarioInputs.marketingSpendDelta, true)}/mo
+                {scenarioInputs.marketingBudgetDelta > 0 ? '+' : ''}
+                {formatCurrency(scenarioInputs.marketingBudgetDelta, true)}/mo
               </span>
             </div>
             <input
@@ -217,203 +286,164 @@ export const SimulatorPage: React.FC = () => {
               min="-400000"
               max="500000"
               step="50000"
-              value={scenarioInputs.marketingSpendDelta}
-              onChange={(e) => handleInputChange('marketingSpendDelta', parseInt(e.target.value, 10))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              value={scenarioInputs.marketingBudgetDelta}
+              onChange={(e) =>
+                setScenarioInputs({
+                  ...scenarioInputs,
+                  marketingBudgetDelta: Number(e.target.value),
+                })
+              }
+              className="w-full accent-slate-900 bg-slate-200 h-1.5 rounded-lg appearance-none cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>-₹4.0L (Freeze Ads)</span>
-              <span>₹0</span>
-              <span>+₹5.0L (Aggressive)</span>
+            <div className="flex justify-between text-[10px] text-slate-400">
+              <span>-₹4.0L/mo</span>
+              <span>0</span>
+              <span>+₹5.0L/mo</span>
             </div>
           </div>
-
-          {/* Slider 4: New Hires Headcount */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300">New Headcount Additions</span>
-              <span className="font-mono font-bold text-white">
-                +{scenarioInputs.newHiresCount} Team Members
-              </span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              step="1"
-              value={scenarioInputs.newHiresCount}
-              onChange={(e) => handleInputChange('newHiresCount', parseInt(e.target.value, 10))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500"
-            />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>0 (Hiring Freeze)</span>
-              <span>5 Hires</span>
-              <span>+10 Hires</span>
-            </div>
-          </div>
-
-          {/* Average Salary Input */}
-          {scenarioInputs.newHiresCount > 0 && (
-            <div className="p-3 rounded-xl bg-[#0f172a] border border-[#1e293b] space-y-1">
-              <label className="text-[11px] text-slate-400 font-semibold uppercase">
-                Average Annual Base Salary per Hire
-              </label>
-              <input
-                type="number"
-                step="5000"
-                value={scenarioInputs.avgHireSalary}
-                onChange={(e) => handleInputChange('avgHireSalary', parseInt(e.target.value, 10))}
-                className="w-full px-2.5 py-1.5 bg-[#131c2e] border border-[#1f2d47] rounded-lg text-xs text-white font-mono focus:outline-none focus:border-brand-500"
-              />
-              <span className="text-[10px] text-slate-500 block">
-                +15% added for payroll taxes, health benefits & SaaS tools.
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Right Column: Real-Time Impact & Comparison (7 cols) */}
+        {/* Right Column: Impact Analysis & Visual Projections (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* AI Scenario Synthesis Banner */}
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#131b2e] to-[#121c33] border border-brand-500/30">
-            <div className="flex items-center justify-between mb-2">
+          {/* AI Narrative Analysis Card */}
+          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-brand-300" />
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-300">
-                  Simulation Outcome Assessment
+                <span className="p-1 rounded bg-slate-100 text-slate-700">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </span>
+                <span className="text-xs font-semibold text-slate-900 uppercase">
+                  Scenario Impact Synthesis
                 </span>
               </div>
-              <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border ${verdictBadge}`}>
+              <span
+                className={`text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full ${
+                  impact.verdict === 'Accretive Growth' || impact.verdict === 'Sustainable'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-rose-50 text-rose-700 border border-rose-200'
+                }`}
+              >
                 {impact.verdict}
               </span>
             </div>
-            <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-normal">
+            <p className="text-xs text-slate-700 leading-relaxed font-normal">
               "{aiAnalysis}"
             </p>
           </div>
 
-          {/* Side-by-Side Comparative Metrics Grid */}
+          {/* Side-by-Side KPI Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {/* Runway */}
-            <div className="p-3.5 rounded-xl glass-card space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase">Simulated Runway</span>
-              <p className="text-xl font-bold text-white">
-                {simulated.cashRunwayMonths >= 90 ? 'Breakeven' : `${simulated.cashRunwayMonths} mos`}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">Simulated Runway</span>
+              <p className="text-lg font-bold font-mono text-slate-900 mt-1">
+                {simulated.cashRunwayMonths} <span className="text-xs text-slate-500 font-normal">mos</span>
               </p>
-              <div className="text-[11px] font-mono">
-                <span
-                  className={
-                    impact.runwayDeltaMonths > 0
-                      ? 'text-emerald-400 font-bold'
-                      : impact.runwayDeltaMonths < 0
-                      ? 'text-rose-400 font-bold'
-                      : 'text-slate-400'
-                  }
-                >
-                  {impact.runwayDeltaMonths > 0 ? `+${impact.runwayDeltaMonths}` : impact.runwayDeltaMonths} mos delta
-                </span>
-              </div>
-            </div>
-
-            {/* Monthly Net Burn */}
-            <div className="p-3.5 rounded-xl glass-card space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase">Monthly Net Flow</span>
-              <p
-                className={`text-xl font-bold font-mono ${
-                  simulated.netCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'
+              <span
+                className={`text-[10px] font-medium flex items-center gap-0.5 mt-0.5 ${
+                  impact.runwayDeltaMonths >= 0 ? 'text-emerald-600' : 'text-rose-600'
                 }`}
               >
-                {simulated.netCashFlow >= 0 ? '+' : '-'}
-                {formatCurrency(Math.abs(simulated.netCashFlow), true)}
+                {impact.runwayDeltaMonths >= 0 ? '+' : ''}
+                {impact.runwayDeltaMonths} mos delta
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">Monthly Burn</span>
+              <p className="text-lg font-bold font-mono text-slate-900 mt-1">
+                {formatCurrency(simulated.monthlyBurnRate, true)}
               </p>
-              <div className="text-[11px] font-mono text-slate-400">
-                <span>Base: -{formatCurrency(Math.abs(baseline.netCashFlow), true)}</span>
-              </div>
-            </div>
-
-            {/* Risk Score */}
-            <div className="p-3.5 rounded-xl glass-card space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase">Projected Risk</span>
-              <p className="text-xl font-bold text-white">{simulated.riskScore}/100</p>
-              <div className="text-[11px] font-mono">
-                <span
-                  className={
-                    impact.riskScoreDelta > 0
-                      ? 'text-rose-400 font-bold'
-                      : impact.riskScoreDelta < 0
-                      ? 'text-emerald-400 font-bold'
-                      : 'text-slate-400'
-                  }
-                >
-                  {impact.riskScoreDelta > 0 ? `+${impact.riskScoreDelta}` : impact.riskScoreDelta} pts
-                </span>
-              </div>
-            </div>
-
-            {/* Cash After 6 Mos Delta */}
-            <div className="p-3.5 rounded-xl glass-card space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase">6-Mo Reserve Delta</span>
-              <p
-                className={`text-xl font-bold font-mono ${
-                  impact.projectedCashAfter6MonthsDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'
+              <span
+                className={`text-[10px] font-medium mt-0.5 block ${
+                  impact.monthlyBurnDelta <= 0 ? 'text-emerald-600' : 'text-rose-600'
                 }`}
               >
-                {impact.projectedCashAfter6MonthsDelta >= 0 ? '+' : ''}
-                {formatCurrency(impact.projectedCashAfter6MonthsDelta, true)}
+                {impact.monthlyBurnDelta > 0 ? '+' : ''}
+                {formatCurrency(impact.monthlyBurnDelta, true)}/mo
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">6-Month Capital</span>
+              <p className="text-lg font-bold font-mono text-slate-900 mt-1">
+                {formatCurrency(simulated.endingCashBalance6M, true)}
               </p>
-              <span className="text-[10px] text-slate-500 block">vs baseline path</span>
+              <span
+                className={`text-[10px] font-medium mt-0.5 block ${
+                  impact.cashBalance6MDelta >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                }`}
+              >
+                {impact.cashBalance6MDelta >= 0 ? '+' : ''}
+                {formatCurrency(impact.cashBalance6MDelta, true)}
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+              <span className="text-[10px] text-slate-500 uppercase font-medium block">Projected Risk</span>
+              <p className="text-lg font-bold font-mono text-slate-900 mt-1">
+                {simulated.projectedRiskScore} <span className="text-xs text-slate-500 font-normal">/ 100</span>
+              </p>
+              <span
+                className={`text-[10px] font-medium mt-0.5 block ${
+                  impact.riskScoreDelta <= 0 ? 'text-emerald-600' : 'text-rose-600'
+                }`}
+              >
+                {impact.riskScoreDelta > 0 ? '+' : ''}
+                {impact.riskScoreDelta} pts
+              </span>
             </div>
           </div>
 
-          {/* 6-Month Projection Comparison Chart */}
-          <div className="p-5 rounded-2xl glass-panel space-y-3">
+          {/* Simulated Trajectory Comparison Chart */}
+          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                6-Month Projected Cash Reserve Trajectory
-              </h4>
-              <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-1.5 rounded bg-slate-500 inline-block" />
-                  <span className="text-slate-400">Baseline Plan</span>
+              <h4 className="text-xs font-bold text-slate-900">Baseline vs. Simulated Trajectory</h4>
+              <div className="flex items-center gap-3 text-[11px]">
+                <div className="flex items-center gap-1">
+                  <span className="w-2.5 h-0.5 bg-slate-400 inline-block" />
+                  <span className="text-slate-500">Baseline</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-1.5 rounded bg-brand-400 inline-block" />
-                  <span className="text-brand-300 font-semibold">Simulated Plan</span>
+                <div className="flex items-center gap-1">
+                  <span className="w-2.5 h-0.5 bg-blue-600 inline-block" />
+                  <span className="text-blue-600 font-semibold">Simulated</span>
                 </div>
               </div>
             </div>
 
-            <div className="h-56 w-full">
+            <div className="h-48 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={timelineProjection} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                  <XAxis dataKey="label" stroke="#64748b" fontSize={11} tickLine={false} />
+                <LineChart data={timelineProjection} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
                   <YAxis
-                    stroke="#64748b"
+                    stroke="#94a3b8"
                     fontSize={11}
                     tickLine={false}
                     tickFormatter={(v) => formatCurrency(v, true)}
                   />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }}
-                    formatter={(v: any, name: any) => [formatCurrency(Number(v)), name === 'baselineBalance' ? 'Baseline Cash' : 'Simulated Cash']}
+                    contentStyle={{
+                      backgroundColor: '#ffffff',
+                      borderColor: '#e2e8f0',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                    formatter={(val: any, name: any) => [formatCurrency(Number(val)), name]}
                   />
-                  <ReferenceLine y={4000000} stroke="#f59e0b" strokeDasharray="3 3" />
                   <Line
                     type="monotone"
-                    dataKey="baselineBalance"
-                    name="Baseline Plan"
-                    stroke="#64748b"
+                    dataKey="baselineCash"
+                    name="Baseline Balance"
+                    stroke="#94a3b8"
                     strokeWidth={2}
-                    strokeDasharray="4 4"
-                    dot={{ r: 3 }}
+                    dot={{ r: 2 }}
                   />
                   <Line
                     type="monotone"
-                    dataKey="simulatedBalance"
-                    name="Simulated Plan"
-                    stroke="#6366f1"
-                    strokeWidth={3}
-                    dot={{ r: 4, fill: '#6366f1' }}
+                    dataKey="simulatedCash"
+                    name="Simulated Balance"
+                    stroke="#2563eb"
+                    strokeWidth={2.5}
+                    dot={{ r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

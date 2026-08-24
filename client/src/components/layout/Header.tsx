@@ -12,52 +12,52 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewTxModal, onToggleMobile
 
   const titles: Record<NavTab, { title: string; subtitle: string }> = {
     dashboard: {
-      title: 'Executive Dashboard',
-      subtitle: 'Real-time overview of cash reserves, burn rate, and runway',
+      title: 'Financial Overview',
+      subtitle: 'Real-time cash balance, burn rate, and financial health',
     },
     transactions: {
       title: 'Transactions & Ledger',
-      subtitle: 'Automated anomaly detection, spend benchmarks, and risk flags',
+      subtitle: 'Transaction history, anomaly flags, and departmental spend',
     },
     cashflow: {
-      title: 'Cash Flow Forecasting',
-      subtitle: '3 to 12-month projections and safety reserve milestones',
+      title: 'Cash Flow Forecast',
+      subtitle: 'Projections, runway analysis, and minimum safety reserves',
     },
     budgets: {
-      title: 'Department Budgets',
-      subtitle: 'Allocated vs actual spending with burn pacing alerts',
+      title: 'Spending Analysis',
+      subtitle: 'Departmental budget allocations and monthly burn pacing',
     },
     insights: {
-      title: 'Financial Recommendations',
-      subtitle: 'Optimizations to reduce burn rate and recover unused software seats',
+      title: 'Cost Recommendations',
+      subtitle: 'Actionable opportunities to reduce burn rate and optimize software spend',
     },
     risk: {
-      title: 'Risk Monitor',
-      subtitle: 'Multi-factor risk evaluation across runway, burn, and anomalies',
+      title: 'Risk Alerts',
+      subtitle: 'Key risk indicators across runway, burn rate, and outlier spend',
     },
     assistant: {
-      title: 'Finance Assistant',
-      subtitle: 'Interactive analytics and natural language Q&A',
+      title: 'Financial Assistant',
+      subtitle: 'Inquire on financial metrics, runway calculations, and unit economics',
     },
     simulator: {
-      title: 'Scenario Simulator',
-      subtitle: 'Stress-test hiring plans, revenue shifts, and budget adjustments',
+      title: 'Scenario Planning',
+      subtitle: 'Model the impact of hiring plans, revenue changes, and budget shifts',
     },
     settings: {
       title: 'Settings',
-      subtitle: 'Manage organization profile and sensitivity rules',
+      subtitle: 'Organization profile, currency preferences, and alerting thresholds',
     },
   };
 
   const currentMeta = titles[currentTab] || titles.dashboard;
 
   return (
-    <header className="bg-[#0e1422] border-b border-[#1e293b] px-4 md:px-6 py-3.5 sticky top-0 z-20 flex items-center justify-between gap-3">
+    <header className="bg-white border-b border-slate-200 px-4 md:px-6 py-3 sticky top-0 z-20 flex items-center justify-between gap-3">
       {/* Left: Mobile Menu Button + Page Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onToggleMobileSidebar}
-          className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#151d2e] border border-[#1e293b] lg:hidden shrink-0"
+          className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 lg:hidden shrink-0"
           title="Open menu"
         >
           <Menu className="w-4 h-4" />
@@ -65,28 +65,30 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewTxModal, onToggleMobile
 
         <div className="min-w-0 truncate">
           <div className="flex items-center gap-2">
-            <h1 className="text-base md:text-lg font-bold text-white tracking-tight truncate">
+            <h1 className="text-base md:text-lg font-bold text-slate-900 tracking-tight truncate">
               {currentMeta.title}
             </h1>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Live
             </span>
           </div>
-          <p className="text-xs text-slate-400 truncate hidden md:block">{currentMeta.subtitle}</p>
+          <p className="text-xs text-slate-500 truncate hidden md:block">{currentMeta.subtitle}</p>
         </div>
       </div>
 
       {/* Right: Actions Toolbar */}
-      <div className="flex items-center gap-2 md:gap-3 shrink-0">
+      <div className="flex items-center gap-2 md:gap-2.5 shrink-0">
         {/* Currency Switcher */}
-        <div className="flex items-center bg-[#121929] border border-[#1e293b] rounded-lg p-0.5">
+        <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-0.5">
           {(['INR', 'USD', 'EUR'] as const).map((curr) => (
             <button
               key={curr}
               onClick={() => setCurrency(curr)}
               className={`px-2 py-1 text-xs font-semibold rounded-md transition-colors ${
-                currency === curr ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                currency === curr
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               {curr === 'INR' ? '₹' : curr === 'USD' ? '$' : '€'}
@@ -100,15 +102,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewTxModal, onToggleMobile
           onClick={refreshAllData}
           disabled={loading}
           title="Refresh data"
-          className="p-2 rounded-lg bg-[#121929] border border-[#1e293b] text-slate-400 hover:text-white hover:bg-[#1a2336] transition-colors disabled:opacity-50"
+          className="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 shadow-xs transition-colors disabled:opacity-50"
         >
-          <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
+          <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-slate-900' : ''}`} />
         </button>
 
         {/* Log Transaction Button */}
         <button
           onClick={onOpenNewTxModal}
-          className="flex items-center gap-1.5 px-3 py-1.5 md:px-3.5 md:py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 md:px-3.5 md:py-2 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors shadow-xs"
         >
           <PlusCircle className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Log Transaction</span>

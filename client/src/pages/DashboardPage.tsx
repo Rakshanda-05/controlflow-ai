@@ -1,16 +1,9 @@
 import React from 'react';
 import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  AlertTriangle,
   ArrowUpRight,
-  ShieldCheck,
-  Zap,
-  Clock,
-  CheckCircle2,
-  FileText,
   ChevronRight,
+  FileText,
+  AlertCircle,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -41,27 +34,27 @@ export const DashboardPage: React.FC = () => {
 
   if (!kpis) {
     return (
-      <div className="p-12 text-center text-slate-400">
-        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-xs font-medium">Loading Dashboard...</p>
+      <div className="p-12 text-center text-slate-500">
+        <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs font-medium">Loading financial metrics...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 space-y-4 md:space-y-5 w-full max-w-7xl mx-auto overflow-hidden">
-      {/* 1. Executive Summary Briefing */}
-      <div className="p-3.5 sm:p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+    <div className="p-4 md:p-6 space-y-5 w-full max-w-7xl mx-auto">
+      {/* 1. Executive Briefing Card */}
+      <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5 max-w-3xl">
           <div className="flex items-center gap-2">
-            <span className="p-1 rounded bg-indigo-500/10 text-indigo-400">
+            <span className="p-1 rounded bg-slate-100 text-slate-700">
               <FileText className="w-3.5 h-3.5" />
             </span>
-            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wide">
-              Executive Briefing
+            <span className="text-xs font-semibold text-slate-900 uppercase tracking-wide">
+              Financial Overview & Briefing
             </span>
           </div>
-          <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-normal">
+          <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-normal">
             "{aiExecutiveSummary}"
           </p>
         </div>
@@ -69,7 +62,7 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setCurrentTab('insights')}
-            className="w-full sm:w-auto justify-center px-3.5 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center gap-1.5"
+            className="w-full sm:w-auto justify-center px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors flex items-center gap-1.5 shadow-xs"
           >
             <span>View Recommendations</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -77,72 +70,72 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Key Performance Indicators Grid (Responsive: 2 on Mobile, 3 on Tablet, 6 on Desktop) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 md:gap-4">
+      {/* 2. Key Performance Indicators Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
         {/* Total Revenue */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Total Revenue</span>
-          <p className="text-base md:text-lg font-bold text-white tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Total Revenue</span>
+          <p className="text-base md:text-lg font-bold text-slate-900 tracking-tight">
             {formatCurrency(kpis.totalRevenue.value, true)}
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
+          <div className="mt-1 flex items-center gap-0.5 text-[10px] text-emerald-600 font-semibold">
             <ArrowUpRight className="w-3 h-3 shrink-0" />
             <span>+{kpis.totalRevenue.changePct}% vs prev mo</span>
           </div>
         </div>
 
         {/* Total Expenses */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Total Expenses</span>
-          <p className="text-base md:text-lg font-bold text-rose-400 tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Total Expenses</span>
+          <p className="text-base md:text-lg font-bold text-rose-600 tracking-tight">
             {formatCurrency(kpis.totalExpenses.value, true)}
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-rose-400 font-medium">
+          <div className="mt-1 flex items-center gap-0.5 text-[10px] text-rose-600 font-semibold">
             <ArrowUpRight className="w-3 h-3 shrink-0" />
             <span>+{kpis.totalExpenses.changePct}% MoM</span>
           </div>
         </div>
 
         {/* Net Cash Flow */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Net Cash Flow</span>
-          <p className="text-base md:text-lg font-bold text-amber-400 tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Net Cash Flow</span>
+          <p className="text-base md:text-lg font-bold text-amber-600 tracking-tight">
             -{formatCurrency(Math.abs(kpis.netCashFlow.value), true)}
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-amber-400 font-medium">
+          <div className="mt-1 text-[10px] text-slate-500 font-medium">
             <span>Net Monthly Outflow</span>
           </div>
         </div>
 
         {/* Cash Reserves */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Cash Reserves</span>
-          <p className="text-base md:text-lg font-bold text-white tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Cash Reserves</span>
+          <p className="text-base md:text-lg font-bold text-slate-900 tracking-tight">
             {formatCurrency(kpis.cashBalance.value, true)}
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400">
-            <span>Liquid Balance</span>
+          <div className="mt-1 text-[10px] text-slate-500">
+            <span>Liquid Reserves</span>
           </div>
         </div>
 
         {/* Monthly Burn Rate */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Monthly Burn</span>
-          <p className="text-base md:text-lg font-bold text-slate-200 tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Monthly Burn</span>
+          <p className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
             {formatCurrency(kpis.burnRate.value, true)}/mo
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400">
+          <div className="mt-1 text-[10px] text-slate-500">
             <span>Burn Rate</span>
           </div>
         </div>
 
         {/* Cash Runway */}
-        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
-          <span className="text-[11px] font-medium text-slate-400 block mb-1">Cash Runway</span>
-          <p className="text-base md:text-lg font-bold text-amber-400 tracking-tight">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-medium text-slate-500 block mb-1">Cash Runway</span>
+          <p className="text-base md:text-lg font-bold text-amber-600 tracking-tight">
             {kpis.cashRunway.months} Months
           </p>
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400">
+          <div className="mt-1 text-[10px] text-slate-500">
             <span>Target: 12.0 mos</span>
           </div>
         </div>
@@ -151,20 +144,20 @@ export const DashboardPage: React.FC = () => {
       {/* 3. Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Revenue vs Expenses Historical Chart */}
-        <div className="lg:col-span-2 p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+        <div className="lg:col-span-2 p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">Revenue vs. Operating Expenses</h3>
-              <p className="text-xs text-slate-400">Trailing 6-month performance comparison</p>
+              <h3 className="text-sm font-bold text-slate-900 tracking-tight">Revenue vs. Operating Expenses</h3>
+              <p className="text-xs text-slate-500">Trailing 6-month financial performance</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block" />
-                <span className="text-slate-300">Revenue</span>
+                <span className="text-slate-600 font-medium">Revenue</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block" />
-                <span className="text-slate-300">Expenses</span>
+                <span className="text-slate-600 font-medium">Expenses</span>
               </div>
             </div>
           </div>
@@ -172,19 +165,20 @@ export const DashboardPage: React.FC = () => {
           <div className="h-60 md:h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueVsExpenses} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
+                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis
-                  stroke="#64748b"
+                  stroke="#94a3b8"
                   fontSize={11}
                   tickLine={false}
                   tickFormatter={(v) => formatCurrency(v, true)}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
                   }}
                   formatter={(value: any) => [formatCurrency(Number(value)), '']}
                 />
@@ -196,26 +190,26 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Financial Health Score */}
-        <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col justify-between space-y-4">
+        <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white">Financial Health Score</h3>
-              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <h3 className="text-sm font-bold text-slate-900">Financial Health Index</h3>
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                 {kpis.healthScore.rating}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">Composite index across runway and anomalies</p>
+            <p className="text-xs text-slate-500 mt-0.5">Composite index across runway and budget adherence</p>
           </div>
 
           {/* Health Score Circular Gauge Metric */}
           <div className="flex flex-col items-center justify-center my-auto py-2">
-            <div className="relative w-32 h-32 flex items-center justify-center">
+            <div className="relative w-28 h-28 flex items-center justify-center">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                 <circle
                   cx="50"
                   cy="50"
                   r="42"
-                  stroke="#1e293b"
+                  stroke="#f1f5f9"
                   strokeWidth="8"
                   fill="transparent"
                 />
@@ -223,7 +217,7 @@ export const DashboardPage: React.FC = () => {
                   cx="50"
                   cy="50"
                   r="42"
-                  stroke="#6366f1"
+                  stroke="#0f172a"
                   strokeWidth="8"
                   strokeDasharray="264"
                   strokeDashoffset={264 - (264 * kpis.healthScore.score) / 100}
@@ -232,20 +226,20 @@ export const DashboardPage: React.FC = () => {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-white">{kpis.healthScore.score}</span>
+                <span className="text-2xl font-bold text-slate-900">{kpis.healthScore.score}</span>
                 <span className="text-[9px] uppercase font-semibold text-slate-400">/ 100</span>
               </div>
             </div>
-            <p className="text-xs text-slate-400 text-center mt-2 max-w-[200px]">
+            <p className="text-xs text-slate-500 text-center mt-2 max-w-[200px]">
               Stable liquidity with short-term cloud infrastructure overage flags.
             </p>
           </div>
 
           <button
             onClick={() => setCurrentTab('risk')}
-            className="w-full py-2 rounded-lg text-xs font-semibold bg-[#141c2e] hover:bg-[#1a253d] border border-[#1e293b] text-slate-200 transition-colors flex items-center justify-center gap-1"
+            className="w-full py-2 rounded-lg text-xs font-semibold bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors flex items-center justify-center gap-1 shadow-xs"
           >
-            <span>Inspect Risk Matrix</span>
+            <span>Inspect Risk Breakdown</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -254,13 +248,13 @@ export const DashboardPage: React.FC = () => {
       {/* 4. Cash Balance Trend + Expense Category Allocation */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Cash Balance Trend */}
-        <div className="lg:col-span-2 p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+        <div className="lg:col-span-2 p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">Cash Balance Trajectory</h3>
-              <p className="text-xs text-slate-400">Liquid reserves over past billing cycles</p>
+              <h3 className="text-sm font-bold text-slate-900 tracking-tight">Cash Balance Trajectory</h3>
+              <p className="text-xs text-slate-500">Liquid balance over trailing billing cycles</p>
             </div>
-            <span className="text-xs font-mono font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            <span className="text-xs font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
               Current: {formatCurrency(kpis.cashBalance.value, true)}
             </span>
           </div>
@@ -270,30 +264,31 @@ export const DashboardPage: React.FC = () => {
               <AreaChart data={cashBalanceTrend} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
+                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis
-                  stroke="#64748b"
+                  stroke="#94a3b8"
                   fontSize={11}
                   tickLine={false}
                   tickFormatter={(v) => formatCurrency(v, true)}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
                   }}
                   formatter={(value: any) => [formatCurrency(Number(value)), 'Cash Balance']}
                 />
                 <Area
                   type="monotone"
                   dataKey="balance"
-                  stroke="#6366f1"
+                  stroke="#2563eb"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#balanceGrad)"
@@ -304,10 +299,10 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Expense Category Allocation */}
-        <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+        <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight">Expense Categories</h3>
-            <p className="text-xs text-slate-400">Current monthly spend distribution</p>
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight">Expense Distribution</h3>
+            <p className="text-xs text-slate-500">Current monthly spend by category</p>
           </div>
 
           <div className="h-40 w-full relative">
@@ -329,8 +324,8 @@ export const DashboardPage: React.FC = () => {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
                   }}
@@ -345,11 +340,11 @@ export const DashboardPage: React.FC = () => {
               <div key={item.category} className="flex items-center justify-between text-xs py-0.5">
                 <div className="flex items-center gap-2 truncate">
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                  <span className="text-slate-300 truncate text-[11px]">{item.category}</span>
+                  <span className="text-slate-700 truncate text-[11px]">{item.category}</span>
                 </div>
                 <div className="flex items-center gap-2 font-mono text-[11px] shrink-0">
                   <span className="text-slate-400">{item.percentage}%</span>
-                  <span className="text-white font-semibold">{formatCurrency(item.amount, true)}</span>
+                  <span className="text-slate-900 font-semibold">{formatCurrency(item.amount, true)}</span>
                 </div>
               </div>
             ))}
@@ -357,18 +352,18 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 5. Flagged Anomalies & Recent Ledger */}
+      {/* 5. Flagged Outliers & Recent Ledger */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Anomaly Watchlist */}
-        <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+        <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-rose-500/10 text-rose-400">
-                <AlertTriangle className="w-3.5 h-3.5" />
+              <span className="p-1 rounded bg-rose-50 text-rose-600">
+                <AlertCircle className="w-3.5 h-3.5" />
               </span>
-              <h3 className="text-sm font-bold text-white">Flagged Transactions</h3>
+              <h3 className="text-sm font-bold text-slate-900">Flagged Outliers</h3>
             </div>
-            <span className="text-[10px] font-mono text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
               {activeAnomalies.length} Flagged
             </span>
           </div>
@@ -378,25 +373,25 @@ export const DashboardPage: React.FC = () => {
               <div
                 key={item.id}
                 onClick={() => setSelectedTransaction(item)}
-                className="p-3 rounded-lg bg-[#0e1422] border border-[#1e293b] hover:border-slate-600 transition-colors cursor-pointer space-y-1.5"
+                className="p-3 rounded-lg bg-slate-50 border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer space-y-1"
               >
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-white truncate max-w-[200px]">{item.merchant}</span>
-                  <span className="font-mono font-bold text-rose-400">{formatCurrency(item.amount)}</span>
+                  <span className="font-semibold text-slate-900 truncate max-w-[200px]">{item.merchant}</span>
+                  <span className="font-mono font-bold text-rose-600">{formatCurrency(item.amount)}</span>
                 </div>
-                <p className="text-[11px] text-slate-400 line-clamp-1">{item.anomalyReason}</p>
+                <p className="text-[11px] text-slate-500 line-clamp-1">{item.anomalyReason}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Recent Ledger */}
-        <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
+        <div className="p-4 md:p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">Recent Transactions</h3>
+            <h3 className="text-sm font-bold text-slate-900">Recent Transactions</h3>
             <button
               onClick={() => setCurrentTab('transactions')}
-              className="text-xs text-indigo-400 hover:text-indigo-300 font-medium"
+              className="text-xs text-slate-900 hover:text-indigo-600 font-semibold"
             >
               View All
             </button>
@@ -407,15 +402,15 @@ export const DashboardPage: React.FC = () => {
               <div
                 key={item.id}
                 onClick={() => setSelectedTransaction(item)}
-                className="p-3 rounded-lg bg-[#0e1422] border border-[#1e293b] hover:border-slate-600 transition-colors cursor-pointer flex items-center justify-between text-xs"
+                className="p-3 rounded-lg bg-slate-50 border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer flex items-center justify-between text-xs"
               >
                 <div>
-                  <span className="font-semibold text-white block">{item.merchant}</span>
-                  <span className="text-[10px] text-slate-400">{item.category} • {item.date}</span>
+                  <span className="font-semibold text-slate-900 block">{item.merchant}</span>
+                  <span className="text-[10px] text-slate-500">{item.category} • {item.date}</span>
                 </div>
                 <span
                   className={`font-mono font-semibold ${
-                    item.type === 'revenue' ? 'text-emerald-400' : 'text-slate-200'
+                    item.type === 'revenue' ? 'text-emerald-600' : 'text-slate-800'
                   }`}
                 >
                   {item.type === 'revenue' ? '+' : ''}

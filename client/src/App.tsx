@@ -44,11 +44,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#0b0f19] text-white flex flex-col items-center justify-center p-6 text-center">
-          <div className="p-5 rounded-xl bg-[#131b2e] text-slate-200 border border-[#1e293b] max-w-md space-y-3 shadow-lg">
-            <AlertTriangle className="w-6 h-6 mx-auto text-amber-400" />
-            <h2 className="text-base font-bold text-white">Something went wrong</h2>
-            <p className="text-xs text-slate-400">
+        <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col items-center justify-center p-6 text-center">
+          <div className="p-6 rounded-xl bg-white text-slate-800 border border-slate-200 max-w-md space-y-3 shadow-xs">
+            <AlertTriangle className="w-6 h-6 mx-auto text-amber-600" />
+            <h2 className="text-base font-bold text-slate-900">Something went wrong</h2>
+            <p className="text-xs text-slate-500">
               {this.state.error?.message || 'An unexpected rendering error occurred.'}
             </p>
             <button
@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                 this.setState({ hasError: false, error: null });
                 window.location.reload();
               }}
-              className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors inline-flex items-center gap-1.5"
+              className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors inline-flex items-center gap-1.5 shadow-xs"
             >
               <RotateCw className="w-3.5 h-3.5" />
               <span>Reload Dashboard</span>
@@ -100,7 +100,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 font-sans antialiased flex flex-col lg:flex-row overflow-x-hidden">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans antialiased flex flex-col lg:flex-row overflow-x-hidden">
       {/* Sidebar Navigation (Mobile slide-in drawer on phone, permanent on desktop) */}
       <Sidebar
         isOpen={isMobileSidebarOpen}
