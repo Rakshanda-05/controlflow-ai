@@ -36,73 +36,73 @@ export const InsightsPage: React.FC = () => {
     { badge: string; border: string; bg: string; icon: React.ReactNode }
   > = {
     critical: {
-      badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40',
-      border: 'border-rose-500/30 hover:border-rose-500/60',
-      bg: 'bg-gradient-to-r from-rose-950/15 via-slate-900 to-slate-900',
+      badge: 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
+      border: 'border-rose-500/30 hover:border-rose-500/50',
+      bg: 'bg-[#111726]',
       icon: <ShieldAlert className="w-4 h-4 text-rose-400" />,
     },
     high: {
-      badge: 'bg-amber-500/20 text-amber-400 border border-amber-500/40',
-      border: 'border-amber-500/30 hover:border-amber-500/60',
-      bg: 'bg-gradient-to-r from-amber-950/15 via-slate-900 to-slate-900',
+      badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
+      border: 'border-amber-500/30 hover:border-amber-500/50',
+      bg: 'bg-[#111726]',
       icon: <AlertTriangle className="w-4 h-4 text-amber-400" />,
     },
     medium: {
-      badge: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40',
-      border: 'border-indigo-500/30 hover:border-indigo-500/60',
-      bg: 'bg-gradient-to-r from-indigo-950/15 via-slate-900 to-slate-900',
-      icon: <Zap className="w-4 h-4 text-brand-400" />,
+      badge: 'bg-indigo-500/10 text-indigo-300 border border-indigo-500/30',
+      border: 'border-indigo-500/30 hover:border-indigo-500/50',
+      bg: 'bg-[#111726]',
+      icon: <Zap className="w-4 h-4 text-indigo-400" />,
     },
     low: {
-      badge: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40',
-      border: 'border-emerald-500/30 hover:border-emerald-500/60',
-      bg: 'bg-gradient-to-r from-emerald-950/15 via-slate-900 to-slate-900',
+      badge: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
+      border: 'border-emerald-500/30 hover:border-emerald-500/50',
+      bg: 'bg-[#111726]',
       icon: <CheckCircle className="w-4 h-4 text-emerald-400" />,
     },
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
       {/* 1. Header Metrics Card */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl glass-card flex items-center gap-4 border-emerald-500/30 bg-emerald-950/10">
-          <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <DollarSign className="w-6 h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+        <div className="p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <DollarSign className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-emerald-300 font-semibold uppercase">Actionable Savings Identified</span>
-            <p className="text-2xl font-bold text-white tracking-tight">{formatCurrency(totalPotentialSavings, true)}/mo</p>
-            <p className="text-[11px] text-emerald-400/80 mt-0.5 font-medium">Annualized: {formatCurrency(totalPotentialSavings * 12, true)}</p>
+            <span className="text-xs text-slate-400 font-medium block">Identified Savings</span>
+            <p className="text-lg font-bold text-white tracking-tight">{formatCurrency(totalPotentialSavings, true)}/mo</p>
+            <p className="text-[10px] text-emerald-400 font-medium">Annualized: {formatCurrency(totalPotentialSavings * 12, true)}</p>
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl glass-card flex items-center gap-4 border-brand-500/30 bg-brand-950/10">
-          <div className="p-3 rounded-xl bg-brand-500/20 text-brand-400 border border-brand-500/30">
-            <Sparkles className="w-6 h-6" />
+        <div className="p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-brand-300 font-semibold uppercase">Active Prioritized Insights</span>
-            <p className="text-2xl font-bold text-white tracking-tight">{activeInsights.length} Recommendations</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Ranked by risk and financial impact</p>
+            <span className="text-xs text-slate-400 font-medium block">Active Insights</span>
+            <p className="text-lg font-bold text-white tracking-tight">{activeInsights.length} Recommendations</p>
+            <p className="text-[10px] text-slate-400">Ranked by risk and impact</p>
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl glass-card flex items-center gap-4 border-rose-500/30 bg-rose-950/10">
-          <div className="p-3 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
-            <ShieldAlert className="w-6 h-6" />
+        <div className="p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400">
+            <ShieldAlert className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-rose-300 font-semibold uppercase">Critical Outflows</span>
-            <p className="text-2xl font-bold text-rose-400 tracking-tight">
+            <span className="text-xs text-slate-400 font-medium block">Critical Alerts</span>
+            <p className="text-lg font-bold text-rose-400 tracking-tight">
               {insights.filter((i) => i.priority === 'critical' && i.status === 'active').length} Immediate Alerts
             </p>
-            <p className="text-[11px] text-rose-300/80 mt-0.5">Requires VP / Controller Sign-off</p>
+            <p className="text-[10px] text-slate-400">Requires review</p>
           </div>
         </div>
       </div>
 
       {/* 2. Filter Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-2xl glass-panel">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-xl bg-[#111726] border border-[#1e293b]">
         <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
           <span className="text-xs font-semibold text-slate-400 uppercase mr-1">Priority:</span>
           {(['all', 'critical', 'high', 'medium', 'low'] as const).map((p) => (

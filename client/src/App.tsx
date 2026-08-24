@@ -37,17 +37,17 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ControlFlow AI UI Error:', error, errorInfo);
+    console.error('ControlFlow UI Error:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#0a0d14] text-white flex flex-col items-center justify-center p-6 text-center">
-          <div className="p-4 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 max-w-lg space-y-3">
-            <AlertTriangle className="w-8 h-8 mx-auto" />
-            <h2 className="text-lg font-bold">ControlFlow AI Interface Loaded with Fallback</h2>
-            <p className="text-xs text-slate-300">
+        <div className="min-h-screen bg-[#0b0f19] text-white flex flex-col items-center justify-center p-6 text-center">
+          <div className="p-5 rounded-xl bg-[#131b2e] text-slate-200 border border-[#1e293b] max-w-md space-y-3 shadow-lg">
+            <AlertTriangle className="w-6 h-6 mx-auto text-amber-400" />
+            <h2 className="text-base font-bold text-white">Something went wrong</h2>
+            <p className="text-xs text-slate-400">
               {this.state.error?.message || 'An unexpected rendering error occurred.'}
             </p>
             <button
@@ -55,10 +55,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                 this.setState({ hasError: false, error: null });
                 window.location.reload();
               }}
-              className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-glow inline-flex items-center gap-1.5"
+              className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors inline-flex items-center gap-1.5"
             >
               <RotateCw className="w-3.5 h-3.5" />
-              <span>Reload Controller Dashboard</span>
+              <span>Reload Dashboard</span>
             </button>
           </div>
         </div>
@@ -71,6 +71,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 const AppContent: React.FC = () => {
   const { currentTab, selectedTransaction, setSelectedTransaction } = useFinancial();
   const [isNewTxModalOpen, setIsNewTxModalOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const renderCurrentPage = () => {
     switch (currentTab) {
@@ -98,14 +99,20 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0d14] text-slate-100 selection:bg-brand-500 selection:text-white font-sans antialiased">
-      {/* Sidebar Navigation */}
-      <Sidebar />
+    <div className="flex min-h-screen bg-[#0b0f19] text-slate-100 font-sans antialiased">
+      {/* Sidebar Navigation (with Mobile Drawer support) */}
+      <Sidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <Header onOpenNewTxModal={() => setIsNewTxModalOpen(true)} />
-        <main className="flex-1 pb-12">{renderCurrentPage()}</main>
+        <Header
+          onOpenNewTxModal={() => setIsNewTxModalOpen(true)}
+          onToggleMobileSidebar={() => setIsMobileSidebarOpen((prev) => !prev)}
+        />
+        <main className="flex-1 pb-10">{renderCurrentPage()}</main>
       </div>
 
       {/* Global Modals */}

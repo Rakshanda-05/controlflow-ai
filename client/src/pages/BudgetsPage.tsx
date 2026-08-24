@@ -64,56 +64,56 @@ export const BudgetsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      {/* 1. AI Budget Summary Banner */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#131b2e] to-[#121c33] border border-brand-500/30 shadow-lg">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="p-1.5 rounded-lg bg-brand-500/20 text-brand-400 border border-brand-500/30">
-            <Sparkles className="w-4 h-4 text-brand-300 animate-pulse" />
-          </div>
-          <span className="text-xs font-extrabold uppercase tracking-wider text-brand-300">
-            AI Department Budget Intelligence & Pacing Controller
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+      {/* 1. Department Budget Summary Banner */}
+      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b]">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="p-1 rounded bg-indigo-500/10 text-indigo-400">
+            <PieChart className="w-3.5 h-3.5" />
+          </span>
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wide">
+            Budget Pacing Overview
           </span>
         </div>
-        <p className="text-sm text-slate-200 leading-relaxed font-normal">
+        <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-normal">
           "Department spending pacing is at <span className="font-bold text-amber-300">{overallUsedPct}%</span> while only <span className="font-bold text-white">{monthElapsedPct}%</span> of the month has elapsed. <span className="text-rose-400 font-semibold">Engineering has exceeded its ceiling by ₹2.25L</span> due to AWS database overages, while Marketing has consumed 92% of its allocation. Reallocating unspent buffers from Operations & HR is advised."
         </p>
       </div>
 
-      {/* 2. Top Summary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Total Monthly Budget</span>
-          <p className="text-2xl font-bold text-white">{formatCurrency(totalAllocated, true)}</p>
-          <p className="text-[11px] text-slate-500 mt-2">Across 6 operational departments</p>
+      {/* 2. Top Summary KPI Cards (Responsive Grid) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Total Budget</span>
+          <p className="text-lg md:text-xl font-bold text-white">{formatCurrency(totalAllocated, true)}</p>
+          <p className="text-[10px] text-slate-500 mt-1">6 departments</p>
         </div>
 
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Actual Spend to Date</span>
-          <p className="text-2xl font-bold text-rose-400">{formatCurrency(totalSpent, true)}</p>
-          <p className="text-[11px] text-rose-400/80 mt-2">Pacing ahead of month elapsed</p>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Actual Spend</span>
+          <p className="text-lg md:text-xl font-bold text-rose-400">{formatCurrency(totalSpent, true)}</p>
+          <p className="text-[10px] text-rose-400/80 mt-1">Ahead of pacing</p>
         </div>
 
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Remaining Discretionary</span>
-          <p className="text-2xl font-bold text-amber-400">
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Remaining Buffer</span>
+          <p className="text-lg md:text-xl font-bold text-amber-400">
             {formatCurrency(totalAllocated - totalSpent, true)}
           </p>
-          <p className="text-[11px] text-slate-500 mt-2">7.8% cushion for remainder of cycle</p>
+          <p className="text-[10px] text-slate-500 mt-1">Cycle cushion</p>
         </div>
 
-        <div className="p-4 rounded-xl glass-card border-amber-500/20 bg-amber-950/10">
-          <span className="text-xs text-amber-300 font-semibold block mb-1">Calendar Progress</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-400">{monthElapsedPct}%</span>
-            <span className="text-xs text-slate-400">of month elapsed</span>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Month Progress</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg md:text-xl font-bold text-amber-400">{monthElapsedPct}%</span>
+            <span className="text-[10px] text-slate-400">elapsed</span>
           </div>
-          <p className="text-[11px] text-amber-300/80 mt-2">Burn pacing delta: +22.2% ahead</p>
+          <p className="text-[10px] text-amber-400/80 mt-1">+22.2% burn pacing</p>
         </div>
       </div>
 
       {/* 3. Department Budget Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {budgets.map((dept) => {
           const isOver = dept.status === 'over_budget';
           const isApproaching = dept.status === 'approaching_limit';
@@ -122,12 +122,12 @@ export const BudgetsPage: React.FC = () => {
           return (
             <div
               key={dept.id}
-              className={`p-5 rounded-2xl glass-panel space-y-4 border transition-all ${
+              className={`p-4 md:p-5 rounded-xl bg-[#111726] space-y-3.5 border transition-colors ${
                 isOver
-                  ? 'border-rose-500/40 bg-rose-950/10 shadow-glowRose'
+                  ? 'border-rose-500/30 bg-rose-950/5'
                   : isApproaching
                   ? 'border-amber-500/30 bg-amber-950/5'
-                  : 'border-[#1f293d]'
+                  : 'border-[#1e293b]'
               }`}
             >
               {/* Card Header */}

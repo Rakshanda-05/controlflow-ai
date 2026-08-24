@@ -72,67 +72,67 @@ export const SimulatorPage: React.FC = () => {
   }[impact.verdict];
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
       {/* 1. Top Preset Scenarios Bar */}
-      <div className="p-4 rounded-2xl glass-panel flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-300 flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-brand-400" />
-            Quick Scenario Stress Presets:
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-indigo-400" />
+            Stress Test Presets:
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => applyPresetScenario('recession')}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-950/40 text-rose-300 border border-rose-500/30 hover:bg-rose-900/50 transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-rose-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
           >
-            📉 Bear Market / Revenue Slowdown (-25%)
+            📉 Bear Market (-25%)
           </button>
           <button
             onClick={() => applyPresetScenario('expansion')}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900/50 transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-emerald-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
           >
-            🚀 Hypergrowth Expansion (+40% Rev, +4 Hires)
+            🚀 Expansion (+40%)
           </button>
           <button
             onClick={() => applyPresetScenario('bootstrap')}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-950/40 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-900/50 transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-indigo-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
           >
-            🛡️ Conservative Bootstrap (-20% Exp)
+            🛡️ Bootstrap (-20%)
           </button>
           <button
             onClick={() => applyPresetScenario('delayed_fundraise')}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-950/40 text-amber-300 border border-amber-500/30 hover:bg-amber-900/50 transition-colors"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1a2336] text-amber-300 border border-[#1e293b] hover:bg-[#222e47] transition-colors"
           >
-            ⏳ Runway Extension (+5.2 Mos)
+            ⏳ Runway Extension (+5M)
           </button>
           <button
             onClick={handleReset}
             title="Reset to Baseline"
-            className="p-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700"
+            className="p-1.5 rounded-lg bg-[#141c2e] text-slate-300 hover:text-white border border-[#1e293b]"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* 2. Interactive Controls & Side-by-Side Impact (2 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* 2. Interactive Controls & Side-by-Side Impact */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Interactive Sliders (5 cols) */}
-        <div className="lg:col-span-5 p-5 rounded-2xl glass-panel space-y-5 border border-[#1f293d]">
-          <div className="flex items-center justify-between border-b border-[#1f293d] pb-3">
+        <div className="lg:col-span-5 p-4 md:p-5 rounded-xl bg-[#111726] space-y-4 border border-[#1e293b]">
+          <div className="flex items-center justify-between border-b border-[#1e293b] pb-2.5">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-brand-400" />
-              <h3 className="text-sm font-bold text-white">Simulated Strategic Variables</h3>
+              <SlidersHorizontal className="w-4 h-4 text-indigo-400" />
+              <h3 className="text-sm font-bold text-white">Strategic Variables</h3>
             </div>
-            <span className="text-[10px] text-slate-400">Real-time Recalculation</span>
+            <span className="text-[10px] text-slate-400">Live Recalculation</span>
           </div>
 
           {/* Slider 1: Revenue Growth */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300">Revenue Growth Rate</span>
+              <span className="font-medium text-slate-300">Revenue Growth Rate</span>
               <span
                 className={`font-mono font-bold ${
                   scenarioInputs.revenueGrowthPct > 0

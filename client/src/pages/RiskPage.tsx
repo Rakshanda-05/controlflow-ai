@@ -56,19 +56,19 @@ export const RiskPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
       {/* 1. Top Risk Score Overview */}
-      <div className="p-6 rounded-2xl glass-panel border-rose-500/30 bg-gradient-to-r from-rose-950/20 via-slate-900 to-slate-900 flex flex-col lg:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row items-center justify-between gap-5">
+        <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
           {/* Radial Score Gauge */}
-          <div className="relative w-32 h-32 flex items-center justify-center shrink-0">
+          <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
                 r="42"
                 stroke="#1e293b"
-                strokeWidth="10"
+                strokeWidth="8"
                 fill="transparent"
               />
               <circle
@@ -76,7 +76,7 @@ export const RiskPage: React.FC = () => {
                 cy="50"
                 r="42"
                 stroke="#f43f5e"
-                strokeWidth="10"
+                strokeWidth="8"
                 strokeDasharray="264"
                 strokeDashoffset={264 - (264 * overallScore) / 100}
                 strokeLinecap="round"
@@ -84,8 +84,8 @@ export const RiskPage: React.FC = () => {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-extrabold text-white">{overallScore}</span>
-              <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider">
+              <span className="text-2xl font-bold text-white">{overallScore}</span>
+              <span className="text-[9px] uppercase font-semibold text-rose-400">
                 {riskLevel}
               </span>
             </div>
@@ -93,13 +93,13 @@ export const RiskPage: React.FC = () => {
 
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex items-center justify-center sm:justify-start gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
-                Composite Risk Exposure: {overallScore}/100
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full text-rose-400 bg-rose-500/10 border border-rose-500/20">
+                Risk Score: {overallScore}/100
               </span>
-              <span className="text-xs text-slate-400">Health Index: {healthScore}/100 ({healthStatus})</span>
+              <span className="text-[11px] text-slate-400">Health Index: {healthScore}/100</span>
             </div>
-            <h2 className="text-lg font-bold text-white tracking-tight">
-              Autonomous Financial Risk & Capital Protection
+            <h2 className="text-sm md:text-base font-bold text-white tracking-tight">
+              Risk & Capital Monitor
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed font-normal">
               "{aiRiskSummary}"

@@ -136,42 +136,42 @@ export const TransactionsPage: React.FC = () => {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
       {/* Top Anomaly Summary Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl glass-card flex items-center gap-3.5 border-rose-500/20 bg-rose-950/10">
-          <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
-            <ShieldAlert className="w-5 h-5" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400">
+            <ShieldAlert className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium">Critical Outliers Detected</span>
-            <p className="text-xl font-bold text-rose-400 tracking-tight">{criticalCount} Urgent Items</p>
+            <span className="text-xs text-slate-400 font-medium block">Critical Outliers</span>
+            <p className="text-lg font-bold text-rose-400 tracking-tight">{criticalCount} Urgent Items</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl glass-card flex items-center gap-3.5 border-amber-500/20 bg-amber-950/10">
-          <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-            <AlertTriangle className="w-5 h-5" />
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+            <AlertTriangle className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium">Total Flagged Volume</span>
-            <p className="text-xl font-bold text-amber-400 tracking-tight">{formatCurrency(flaggedVolume, true)}</p>
+            <span className="text-xs text-slate-400 font-medium block">Flagged Volume</span>
+            <p className="text-lg font-bold text-amber-400 tracking-tight">{formatCurrency(flaggedVolume, true)}</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl glass-card flex items-center gap-3.5 border-brand-500/20 bg-brand-950/10">
-          <div className="p-2.5 rounded-xl bg-brand-500/20 text-brand-400 border border-brand-500/30">
-            <Sparkles className="w-5 h-5" />
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-medium">ML Anomaly Engine</span>
-            <p className="text-xl font-bold text-white tracking-tight">Isolation Forest + Z-Score</p>
+            <span className="text-xs text-slate-400 font-medium block">Anomaly Engine</span>
+            <p className="text-lg font-bold text-white tracking-tight">Statistical Z-Score + IQR</p>
           </div>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="p-4 rounded-2xl glass-panel space-y-3">
+      <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b] space-y-3">
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
           {/* Search Input */}
           <div className="relative w-full md:w-80">

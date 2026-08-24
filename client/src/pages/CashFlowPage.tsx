@@ -34,85 +34,82 @@ export const CashFlowPage: React.FC = () => {
   const safetyThreshold = forecast?.safetyThreshold || 4000000;
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      {/* 1. AI Forecasting Diagnostic Banner */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#131b2e] to-[#121c33] border border-brand-500/30 shadow-lg relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2 max-w-4xl">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-brand-500/20 text-brand-400 border border-brand-500/30 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-brand-300 animate-pulse" />
-              </div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-brand-300">
-                AI Predictive Cash Flow & Runway Forecast
-              </span>
-              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">
-                Safety Threshold Alert
-              </span>
-            </div>
-            <p className="text-sm text-slate-200 leading-relaxed font-normal">
-              "{aiExplanation}"
-            </p>
+    <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+      {/* 1. Cash Flow Summary Banner */}
+      <div className="p-4 md:p-5 rounded-xl bg-[#111726] border border-[#1e293b] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1.5 max-w-3xl">
+          <div className="flex items-center gap-2">
+            <span className="p-1 rounded bg-indigo-500/10 text-indigo-400">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </span>
+            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wide">
+              Runway & Burn Trajectory
+            </span>
           </div>
+          <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-normal">
+            "{aiExplanation}"
+          </p>
+        </div>
 
-          {/* Horizon Selector Buttons */}
-          <div className="flex items-center bg-[#0d1424] p-1 rounded-xl border border-[#1f2d47] shrink-0">
-            <span className="text-[11px] font-semibold text-slate-400 px-2 uppercase">Horizon:</span>
-            {[3, 6, 12].map((h) => (
-              <button
-                key={h}
-                onClick={() => setForecastHorizon(h)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  forecastHorizon === h
-                    ? 'bg-brand-600 text-white shadow-glow'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {h} Months
-              </button>
-            ))}
-          </div>
+        {/* Horizon Selector */}
+        <div className="flex items-center bg-[#0d1424] p-1 rounded-lg border border-[#1e293b] shrink-0">
+          <span className="text-[11px] font-medium text-slate-400 px-2">Horizon:</span>
+          {[3, 6, 12].map((h) => (
+            <button
+              key={h}
+              onClick={() => setForecastHorizon(h)}
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                forecastHorizon === h
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {h}M
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* 2. Top Forecast Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 2. Top Forecast Metrics Grid (Responsive) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {/* Current Runway */}
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Current Runway</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-400">{runwayMonthsCurrent}</span>
-            <span className="text-xs text-slate-400">months</span>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Current Runway</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg md:text-xl font-bold text-amber-400">{runwayMonthsCurrent}</span>
+            <span className="text-[10px] text-slate-400">months</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">Trailing burn rate basis ($172.9k/mo)</p>
+          <p className="text-[10px] text-slate-500 mt-1">₹17.29L/mo burn basis</p>
         </div>
 
         {/* Projected Runway */}
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Projected Forecast Runway</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-rose-400">{projectedRunwayMonths}</span>
-            <span className="text-xs text-slate-400">months</span>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Projected Runway</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg md:text-xl font-bold text-rose-400">{projectedRunwayMonths}</span>
+            <span className="text-[10px] text-slate-400">months</span>
           </div>
-          <p className="text-[11px] text-rose-400/80 mt-2">Accelerating burn trajectory</p>
+          <p className="text-[10px] text-rose-400/80 mt-1">Current trajectory</p>
         </div>
 
         {/* Safety Reserve Threshold */}
-        <div className="p-4 rounded-xl glass-card">
-          <span className="text-xs text-slate-400 font-semibold block mb-1">Safety Reserve Boundary</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-white">{formatCurrency(safetyThreshold, true)}</span>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Safety Floor</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg md:text-xl font-bold text-white">{formatCurrency(safetyThreshold, true)}</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">Minimum required enterprise buffer</p>
+          <p className="text-[10px] text-slate-500 mt-1">Policy threshold</p>
         </div>
 
         {/* Projected Breach Date */}
-        <div className="p-4 rounded-xl glass-card border-amber-500/30 bg-amber-950/10">
-          <span className="text-xs text-amber-300 font-semibold block mb-1">Estimated Reserve Depletion</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-400">{projectedDepletionDate}</span>
+        <div className="p-3.5 md:p-4 rounded-xl bg-[#111726] border border-[#1e293b]">
+          <span className="text-[11px] text-slate-400 font-medium block mb-1">Estimated Depletion</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg md:text-xl font-bold text-amber-400">{projectedDepletionDate}</span>
           </div>
-          <p className="text-[11px] text-amber-300/80 mt-2">Without proactive cost containment</p>
+          <p className="text-[10px] text-amber-400/80 mt-1">At current burn</p>
+        </div>
+      </div>
         </div>
       </div>
 
